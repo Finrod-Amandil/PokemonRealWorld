@@ -21,15 +21,19 @@ public class UserInputController implements KeyListener {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			System.out.println("Pressed up!");
+			_userInterface.moveView(0, 10);
 			break;
 		case KeyEvent.VK_DOWN:
 			System.out.println("Pressed down!");
+			_userInterface.moveView(0, -10);
 			break;
 		case KeyEvent.VK_RIGHT:
 			System.out.println("Pressed right!");
+			_userInterface.moveView(10, 0);
 			break;
 		case KeyEvent.VK_LEFT:
 			System.out.println("Pressed left!");
+			_userInterface.moveView(-10, 0);
 			break;
 		default:
 			System.out.println("Pressed something else...");

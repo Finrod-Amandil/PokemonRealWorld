@@ -9,4 +9,5 @@ public interface IUserInterface {
 	public void init(Player player, Region region);
 	public void show();
 	public Component getWindow();
+	public void moveView(int dX, int dY);
 }

@@ -29,12 +29,14 @@ public class MainUi implements IUserInterface {
 	
 	private MainUi() {}
 	
+	@Override
 	public void init(Player player, Region region) {
 		_player = player;
 		_region = region;
 		initialize();
 	}
 	
+	@Override
 	public void show() {
 		EventQueue.invokeLater(new Runnable() {
 	      public void run() {
@@ -47,8 +49,17 @@ public class MainUi implements IUserInterface {
 	    });
 	}
 	
+	@Override
 	public JFrame getWindow() {
 		return _frame;
+	}
+	
+	@Override
+	public void moveView(int dX, int dY) {
+		_map.setBounds(
+			_map.getX() - dX, _map.getY() + dY,
+			_map.getWidth(), _map.getHeight());
+		
 	}
 	
 	private void initialize() {
