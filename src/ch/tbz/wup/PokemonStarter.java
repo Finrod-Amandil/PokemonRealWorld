@@ -1,8 +1,7 @@
 package ch.tbz.wup;
 
 import java.awt.Point;
-
-import ch.tbz.wup.ui.MainUi;
+import java.util.List;
 
 public class PokemonStarter {
 
@@ -15,7 +14,17 @@ public class PokemonStarter {
 		player.setLocation(new Point(683570, 246830));
 		Region region = new Region("zurich", null);
 		
-		MainUi ui = new MainUi(player, region);
-		ui.show();
+		//MainUi ui = new MainUi(player, region);
+		//ui.show();
+		
+		DbContext context = new DbContext();
+		List<PokemonSpecies> all_species = context.getAllPokemon();
+		for (PokemonSpecies species: all_species) {
+			if (species.getType2() == null) {
+				System.out.println(species.getName() + ", " + species.getType1().getName());
+			} else {
+				System.out.println(species.getName() + ", " + species.getType1().getName() + ", " + species.getType2().getName());
+			}
+		}
 	}
 }
