@@ -5,7 +5,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
 import ch.tbz.wup.Player;
@@ -13,6 +15,7 @@ import ch.tbz.wup.Region;
 
 public class MainUi {
 	private JFrame _frame;
+	private JLayeredPane _contentPane;
 	private JLayeredPane _map;
 	
 	private Player _player;
@@ -51,11 +54,23 @@ public class MainUi {
 			MapBuilder builder = new MapBuilder(_region);
 			_map = builder.buildMap();
 			updateMapPosition();
-			_frame.getContentPane().add(_map);
+			_contentPane = new JLayeredPane();
+			_contentPane.setBounds(0, 0, _frame.getWidth(), _frame.getHeight());
+			_frame.getContentPane().add(_contentPane);
+			
+			_contentPane.add(_map);
+			setPlayerSprite();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void setPlayerSprite() {
+		JLabel playerSprite = new JLabel(new ImageIcon("./files/graphics/sprites/player/front_border.png"));
+		playerSprite.setBounds(_frame.getWidth()/2, _frame.getHeight()/2, 24, 25);
+		_contentPane.add(playerSprite);
+		_contentPane.moveToFront(playerSprite);
 	}
 	
 	private void updateMapPosition() {
