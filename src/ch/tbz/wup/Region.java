@@ -1,14 +1,14 @@
 package ch.tbz.wup;
 
 import java.awt.Polygon;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Region {
-	private ArrayList<Area> _areas;
+	private List<Area> _areas;
 	private Polygon _bounds;
 	private String _name;
 	
-	public Region(String name, ArrayList<Area> areas) {
+	public Region(String name, List<Area> areas) {
 		_areas = areas;
 		_name = name;
 	}

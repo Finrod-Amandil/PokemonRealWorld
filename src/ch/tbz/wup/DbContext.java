@@ -10,7 +10,11 @@ import java.util.List;
 
 public class DbContext implements IDbContext {
 	
-	private List<PokemonSpecies> getFromDatabase() {
+	public List<PokemonSpecies> getAllPokemon() {
+		return getPokemonFromDatabase();
+	}
+	
+	private List<PokemonSpecies> getPokemonFromDatabase() {
 		// create connection for DB access
         Connection connection = null;
         
@@ -78,9 +82,5 @@ public class DbContext implements IDbContext {
         }
         
         return pokemon_list;
-	}
-	
-	public List<PokemonSpecies> getAllPokemon() {
-		return getFromDatabase();
 	}
 }

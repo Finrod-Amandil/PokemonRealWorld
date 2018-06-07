@@ -21,7 +21,7 @@ public class Area {
 		return newArea;
 	}
 	
-	public static ArrayList<Area> getAllAreas() {
+	public static List<Area> getAllAreas() {
 		return new ArrayList<Area>(_allAreas);
 	}
 	
