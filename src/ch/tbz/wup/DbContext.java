@@ -1,5 +1,7 @@
 package ch.tbz.wup;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,7 +17,9 @@ public class DbContext implements IDbContext {
         Connection connection = null;
         
         try {
-            String url = "jdbc:sqlite:C:/sqlite/pokedex.sqlite";
+        	String db_directory = "\\files\\pokemon_data\\pokedex.sqlite";
+        	String complete_path = System.getProperty("user.dir") + db_directory;
+            String url = "jdbc:sqlite:" + complete_path;
             connection = DriverManager.getConnection(url);
             return readPokemon(connection);
             
