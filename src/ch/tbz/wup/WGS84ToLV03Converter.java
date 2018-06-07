@@ -7,14 +7,12 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class CoordinateConverter {
-
-	public CoordinateConverter() {}
+public class WGS84ToLV03Converter implements ICoordinateConverter {
 	
-	public static Point convertPointFromWGS84toLV03(double latitude, double longitude) {
+	public Point convertPoint(double dim1, double dim2) {
 		Point point = null;
 		
-		String urlStr = "http://geodesy.geo.admin.ch/reframe/wgs84tolv03?easting=" + latitude + "&northing=" + longitude;
+		String urlStr = "http://geodesy.geo.admin.ch/reframe/wgs84tolv03?easting=" + dim1 + "&northing=" + dim2;
 		
 		try {
 		    URL url = new URL(urlStr);
@@ -41,7 +39,7 @@ public class CoordinateConverter {
 		return point;
 	}
 	
-	private static Point parsePoint(String text) {
+	private Point parsePoint(String text) {
 		if (text.contains("\"coordinates\"")) {
 			String attribute = text.substring(text.indexOf("\"coordinates\""), text.indexOf("]", text.indexOf("\"coordinates\"")) + 1);
 			String xCoordinateString = attribute.substring(attribute.indexOf("[") + 1, attribute.indexOf(",")).trim();

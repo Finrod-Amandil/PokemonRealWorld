@@ -11,11 +11,15 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-public class KmlParser {
-
-	public KmlParser() {}
+public class KmlParser implements IAreaParser {
 	
-	public static List<Area> readAreas(String filePath) {
+	private ICoordinateConverter _converter;
+	
+	public KmlParser(ICoordinateConverter converter) {
+		_converter = converter;
+	}
+	
+	public List<Area> readAreas(String filePath) {
 		//JDOM document builder
 	    SAXBuilder builder = new SAXBuilder();
 	    
@@ -41,7 +45,7 @@ public class KmlParser {
 	    return Area.getAllAreas();
 	}
 	
-	private static Area buildArea(Element placemarkElement) {
+	private Area buildArea(Element placemarkElement) {
 		String name = placemarkElement.getChildText("description"); //TODO
 		String polygonCoordinates = placemarkElement.getChild("Polygon")
 				.getChild("outerBoundaryIs")
@@ -54,7 +58,7 @@ public class KmlParser {
 			String[] coordinates = pointCoordinates.split(",");
 			double latitude = Double.parseDouble(coordinates[0]);
 			double longitude = Double.parseDouble(coordinates[1]);
-			Point pointInLV03 = CoordinateConverter.convertPointFromWGS84toLV03(latitude, longitude);
+			Point pointInLV03 = _converter.convertPoint(latitude, longitude);
 			
 			bounds.addPoint(pointInLV03.x, pointInLV03.y);
 		}
