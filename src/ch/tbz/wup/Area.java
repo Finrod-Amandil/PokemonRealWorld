@@ -17,7 +17,8 @@ public class Area {
 		}
 		
 		//Area does not exist yet
-		return new Area(bounds, name, type);
+		Area newArea = new Area(bounds, name, type);
+		return newArea;
 	}
 	
 	public static ArrayList<Area> getAllAreas() {
