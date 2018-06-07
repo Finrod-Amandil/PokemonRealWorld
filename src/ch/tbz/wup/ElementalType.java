@@ -1,21 +1,30 @@
 package ch.tbz.wup;
 
-import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ElementalType {
-	private String _name;
-	private int _id;
+	private static List<ElementalType> _allTypes = new ArrayList<ElementalType>();
 	
-	public ElementalType(String name, int id) {
+	public static ElementalType getInstance(String name) {
+		for (ElementalType type : _allTypes) {
+			if (type.getName().equalsIgnoreCase(name)) {
+				return type;
+			}
+		}
+		
+		ElementalType newType = new ElementalType(name);
+		_allTypes.add(newType);
+		return newType;
+	}
+	
+	private String _name;
+	
+	private ElementalType(String name) {
 		_name = name;
-		_id = id;
 	}
 	
 	public String getName() {
 		return _name;
-	}
-	
-	public int getId() {
-		return _id;
 	}
 }
