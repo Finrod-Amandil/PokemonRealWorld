@@ -13,7 +13,13 @@ import javax.swing.JLayeredPane;
 import ch.tbz.wup.Player;
 import ch.tbz.wup.Region;
 
-public class MainUi {
+public class MainUi implements IUserInterface {
+	private static MainUi _instance;
+	
+	public static MainUi getInstance() {
+		return _instance != null ? _instance : new MainUi();
+	}
+	
 	private JFrame _frame;
 	private JLayeredPane _contentPane;
 	private JLayeredPane _map;
@@ -21,7 +27,9 @@ public class MainUi {
 	private Player _player;
 	private Region _region;
 	
-	public MainUi(Player player, Region region) {
+	private MainUi() {}
+	
+	public void init(Player player, Region region) {
 		_player = player;
 		_region = region;
 		initialize();
@@ -37,6 +45,10 @@ public class MainUi {
 	        }
 	      }
 	    });
+	}
+	
+	public JFrame getWindow() {
+		return _frame;
 	}
 	
 	private void initialize() {
