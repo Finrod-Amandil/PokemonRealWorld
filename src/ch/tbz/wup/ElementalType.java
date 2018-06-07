@@ -4,18 +4,18 @@ import java.awt.Color;
 
 public class ElementalType {
 	private String _name;
-	private Color _color;
+	private int _id;
 	
-	public ElementalType(String name, Color color) {
+	public ElementalType(String name, int id) {
 		_name = name;
-		_color = color;
+		_id = id;
 	}
 	
 	public String getName() {
 		return _name;
 	}
 	
-	public Color getColor() {
-		return _color;
+	public int getId() {
+		return _id;
 	}
 }
