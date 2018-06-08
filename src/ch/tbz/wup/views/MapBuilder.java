@@ -1,4 +1,4 @@
-package ch.tbz.wup.ui;
+package ch.tbz.wup.views;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -15,33 +15,32 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
-import ch.tbz.wup.Region;
+import viewmodels.MainViewModel;
 
 public class MapBuilder {
 	private HashMap<Point, JLabel> _mapParts;
 	private JLayeredPane _map;
+	private MainViewModel _viewModel;
 	
-	private Region _region;
-	
-	public MapBuilder(Region region) {
-		_region = region;
+	public MapBuilder(MainViewModel viewModel) {
+		_viewModel = viewModel;
 		_mapParts = new HashMap<Point, JLabel>();
 	}
 	
 	public JLayeredPane buildMap() throws IOException {
 		_map = new JLayeredPane();
 	    _map.setName("map");
-	    Rectangle regionBounds = _region.getBounds().getBounds();
+	    Rectangle regionBounds = _viewModel.regionBounds.getBounds();
 	    _map.setBounds(0, 0, regionBounds.width, regionBounds.height);
 		
 		//Get origins (lower left corners) of map parts;
 		List<Point> requiredMapPartOrigins = getMapPartOrigins();
 		
 		//Try loading images
-		String filePath = "./files/graphics/region_maps/" + _region.getName() + "/";
+		String filePath = "./files/graphics/region_maps/" + _viewModel.regionName + "/";
 		
 		if (!Files.isDirectory(Paths.get(filePath))) {
-			throw new IOException("No map images found for region " + _region.getName());
+			throw new IOException("No map images found for region " + _viewModel.regionName);
 		}
 		
 		for (Point originPoint : requiredMapPartOrigins) {
@@ -62,7 +61,7 @@ public class MapBuilder {
 	
 	private ArrayList<Point> getMapPartOrigins() {
 		ArrayList<Point> mapPartOrigins = new ArrayList<Point>();
-		Rectangle regionBounds = _region.getBounds().getBounds();
+		Rectangle regionBounds = _viewModel.regionBounds.getBounds();
 		
 		Point rc_lowerLeftCornerKm = new Point(
 			(int)Math.floor((regionBounds.x)/1000),
@@ -91,7 +90,7 @@ public class MapBuilder {
 				originPoint.x * 1000,
 				(originPoint.y * 1000) + 1000);
 			
-			Rectangle regionBounds = _region.getBounds().getBounds();
+			Rectangle regionBounds = _viewModel.regionBounds.getBounds();
 			
 			Point mapCenter = new Point(
 				regionBounds.x + (int)(regionBounds.getWidth() / 2),

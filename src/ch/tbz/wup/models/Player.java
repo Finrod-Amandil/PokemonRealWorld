@@ -1,4 +1,4 @@
-package ch.tbz.wup;
+package ch.tbz.wup.models;
 
 import java.awt.Point;
 

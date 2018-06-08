@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.tbz.wup.models.ElementalType;
+import ch.tbz.wup.models.PokemonSpecies;
+
 public class DbContext implements IDbContext {
 	
 	public List<PokemonSpecies> getAllPokemon() {

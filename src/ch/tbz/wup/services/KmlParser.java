@@ -1,4 +1,4 @@
-package ch.tbz.wup;
+package ch.tbz.wup.services;
 
 import java.awt.Point;
 import java.awt.Polygon;
@@ -10,6 +10,9 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+
+import ch.tbz.wup.models.Area;
+import ch.tbz.wup.models.AreaType;
 
 public class KmlParser implements IAreaParser {
 	

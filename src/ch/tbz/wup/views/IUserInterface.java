@@ -1,12 +1,11 @@
-package ch.tbz.wup.ui;
+package ch.tbz.wup.views;
 
 import java.awt.Component;
 
-import ch.tbz.wup.Player;
-import ch.tbz.wup.Region;
+import viewmodels.MainViewModel;
 
 public interface IUserInterface {
-	public void init(Player player, Region region);
+	public void init(MainViewModel viewModel);
 	public void show();
 	public Component getWindow();
 	public void moveView(int dX, int dY);

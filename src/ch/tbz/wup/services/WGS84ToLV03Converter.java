@@ -1,4 +1,4 @@
-package ch.tbz.wup;
+package ch.tbz.wup.services;
 
 import java.awt.Point;
 import java.io.BufferedReader;

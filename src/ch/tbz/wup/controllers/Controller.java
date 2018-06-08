@@ -1,14 +1,14 @@
-package ch.tbz.wup;
+package ch.tbz.wup.controllers;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import ch.tbz.wup.ui.IUserInterface;
+import ch.tbz.wup.views.IUserInterface;
 
-public class UserInputController implements KeyListener {
+public class Controller implements KeyListener {
 	private IUserInterface _userInterface;
 	
-	public UserInputController(IUserInterface userInterface) {
+	public Controller(IUserInterface userInterface) {
 		_userInterface = userInterface;
 		_userInterface.getWindow().addKeyListener(this);
 	}

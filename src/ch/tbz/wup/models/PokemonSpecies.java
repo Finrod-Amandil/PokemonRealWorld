@@ -1,4 +1,4 @@
-package ch.tbz.wup;
+package ch.tbz.wup.models;
 
 public class PokemonSpecies {
 	public static PokemonBuilder builder() {

@@ -1,4 +1,4 @@
-package ch.tbz.wup.ui;
+package ch.tbz.wup.views;
 
 import java.awt.EventQueue;
 import java.awt.Point;
@@ -10,30 +10,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
-import ch.tbz.wup.Player;
-import ch.tbz.wup.Region;
+import viewmodels.MainViewModel;
 
-public class MainUi implements IUserInterface {
-	private static MainUi _instance;
+public class MainView implements IUserInterface {
+	private static MainView _instance;
 	
-	public static MainUi getInstance() {
-		return _instance != null ? _instance : new MainUi();
+	public static MainView getInstance() {
+		return _instance != null ? _instance : new MainView();
 	}
 	
 	private JFrame _frame;
 	private JLayeredPane _contentPane;
 	private JLayeredPane _map;
 	
-	private Player _player;
-	private Region _region;
-	
-	private MainUi() {}
+	private MainView() {}
 	
 	@Override
-	public void init(Player player, Region region) {
-		_player = player;
-		_region = region;
-		initialize();
+	public void init(MainViewModel viewModel) {
+		initialize(viewModel);
 	}
 	
 	@Override
@@ -62,7 +56,7 @@ public class MainUi implements IUserInterface {
 		
 	}
 	
-	private void initialize() {
+	private void initialize(MainViewModel viewModel) {
 		//Set properties of main frame
 	    _frame = new JFrame();
 	    _frame.setResizable(false); //Window can't be resized by user
@@ -74,9 +68,9 @@ public class MainUi implements IUserInterface {
 	    _map.setName("map");
 	    
 	    try {
-			MapBuilder builder = new MapBuilder(_region);
+			MapBuilder builder = new MapBuilder(viewModel);
 			_map = builder.buildMap();
-			updateMapPosition();
+			updateMapPosition(viewModel);
 			_contentPane = new JLayeredPane();
 			_contentPane.setBounds(0, 0, _frame.getWidth(), _frame.getHeight());
 			_frame.getContentPane().add(_contentPane);
@@ -96,8 +90,8 @@ public class MainUi implements IUserInterface {
 		_contentPane.moveToFront(playerSprite);
 	}
 	
-	private void updateMapPosition() {
-		Rectangle regionBounds = _region.getBounds().getBounds();
+	private void updateMapPosition(MainViewModel viewModel) {
+		Rectangle regionBounds = viewModel.regionBounds.getBounds();
 		
 		//Map is positioned by giving the coordinates of the top left corner relative to the containing JFrame.
 		Point rc_upperLeftCorner = new Point(
@@ -105,7 +99,7 @@ public class MainUi implements IUserInterface {
 			regionBounds.y + regionBounds.height); //regionBounds.y is the lower corner
 		
 		//Transform position relative to center of JFrame which is equal to player position in real coordinates.
-		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, _player.getLocation());
+		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, viewModel.playerLocation);
 		
 		_map.setBounds(wc_upperLeftCorner.x, wc_upperLeftCorner.y, regionBounds.width, regionBounds.height);
 	}

@@ -1,4 +1,4 @@
-package ch.tbz.wup.ui;
+package ch.tbz.wup.views;
 
 import java.awt.Point;
 import java.awt.Rectangle;
