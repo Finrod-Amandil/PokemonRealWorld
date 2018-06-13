@@ -1,4 +1,4 @@
-package viewmodels;
+package ch.tbz.wup.viewmodels;
 
 import java.awt.Point;
 import java.awt.Polygon;

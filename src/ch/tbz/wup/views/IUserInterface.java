@@ -2,7 +2,7 @@ package ch.tbz.wup.views;
 
 import java.awt.Component;
 
-import viewmodels.MainViewModel;
+import ch.tbz.wup.viewmodels.MainViewModel;
 
 public interface IUserInterface {
 	public void init(MainViewModel viewModel);

@@ -6,8 +6,8 @@ import java.awt.event.KeyListener;
 
 import ch.tbz.wup.models.Player;
 import ch.tbz.wup.models.Region;
+import ch.tbz.wup.viewmodels.MainViewModel;
 import ch.tbz.wup.views.IUserInterface;
-import viewmodels.MainViewModel;
 
 public class Controller implements KeyListener {
 	private IUserInterface _userInterface;

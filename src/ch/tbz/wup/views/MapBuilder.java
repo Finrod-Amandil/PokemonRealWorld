@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
-import viewmodels.MainViewModel;
+import ch.tbz.wup.viewmodels.MainViewModel;
 
 public class MapBuilder {
 	private HashMap<Point, JLabel> _mapParts;

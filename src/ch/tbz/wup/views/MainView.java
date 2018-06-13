@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
-import viewmodels.MainViewModel;
+import ch.tbz.wup.viewmodels.MainViewModel;
 
 public class MainView implements IUserInterface {
 	private static MainView _instance;
