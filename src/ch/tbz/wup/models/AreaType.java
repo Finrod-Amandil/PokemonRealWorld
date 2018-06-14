@@ -1,12 +1,15 @@
 package ch.tbz.wup.models;
 
 public enum AreaType {
+	NONE,
+	REGIONBOUNDS,
 	CITY,
 	LAKE,
 	RIVER,
 	SHORE,
 	PARK,
 	FOREST,
+	MEADOW,
 	INDUSTRY,
 	SPORTSFIELD,
 	BATHS,

@@ -18,6 +18,7 @@ public class Area {
 		
 		//Area does not exist yet
 		Area newArea = new Area(bounds, name, type);
+		_allAreas.add(newArea);
 		return newArea;
 	}
 	

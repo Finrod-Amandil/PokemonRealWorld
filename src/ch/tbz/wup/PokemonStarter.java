@@ -3,11 +3,16 @@ package ch.tbz.wup;
 public class PokemonStarter {
 
 	public static void main(String[] args) {
-		//CoordinateConverter.convertPointFromWGS84toLV03(8, 20);
-		
-		//KmlParser.readAreas("C:\\Users\\severin.zahler\\Desktop\\test.kml");
-		
 		StartUp.configure();
+		
+		/*ICoordinateConverter converter = new WGS84ToLV03Converter();
+		IAreaParser parser = new KmlParser(converter);
+		
+		List<Area> areas = parser.readAreas("C:\\Users\\severin.zahler\\Desktop\\zurich.kml");
+		for (Area area : areas) {
+			System.out.println("Name = " + area.getName() + " Type = " + area.getType().toString());
+		}*/
+		
 		
 		/*DbContext context = new DbContext();
 		List<PokemonSpecies> all_species = context.getAllPokemon();
