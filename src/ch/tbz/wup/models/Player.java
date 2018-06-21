@@ -6,7 +6,10 @@ public class Player {
 	private static Player _instance;
 	
 	public static Player getInstance() {
-		return _instance == null ? new Player() : _instance;
+		if (_instance == null) {
+			_instance = new Player();
+		}
+		return _instance;
 	}
 	
 	private Point _location = new Point(0, 0);
@@ -20,5 +23,4 @@ public class Player {
 	public Point getLocation() {
 		return _location;
 	}
-
 }
