@@ -1,9 +1,12 @@
 package ch.tbz.wup.views;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,14 +19,19 @@ public class MainView implements IUserInterface {
 	private static MainView _instance;
 	
 	public static MainView getInstance() {
-		return _instance != null ? _instance : new MainView();
+		if (_instance == null) {
+			_instance = new MainView();
+		}
+		return _instance;
 	}
+	
+	private MainView() {}
 	
 	private JFrame _frame;
 	private JLayeredPane _contentPane;
 	private JLayeredPane _map;
 	
-	private MainView() {}
+	private List<Component> _stationaryComponents = new ArrayList<Component>();
 	
 	@Override
 	public void init(MainViewModel viewModel) {
@@ -53,6 +61,12 @@ public class MainView implements IUserInterface {
 		_map.setBounds(
 			_map.getX() - dX, _map.getY() + dY,
 			_map.getWidth(), _map.getHeight());
+		
+		for (Component component : _stationaryComponents) {
+			component.setBounds(
+				component.getX() - dX, component.getY() + dY,
+				component.getWidth(), component.getHeight());
+		}
 		
 	}
 	
@@ -102,5 +116,15 @@ public class MainView implements IUserInterface {
 		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, viewModel.playerLocation);
 		
 		_map.setBounds(wc_upperLeftCorner.x, wc_upperLeftCorner.y, regionBounds.width, regionBounds.height);
+	}
+
+	@Override
+	public void showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
+		JLabel image = new JLabel(new ImageIcon(filePath));
+		Point imageLocation = UiUtils.transform(_frame.getBounds(), rc_point, rc_center);
+		image.setBounds(imageLocation.x, imageLocation.y, dimensions.width, dimensions.height);
+		_contentPane.add(image);
+		_contentPane.moveToFront(image);
+		_stationaryComponents.add(image);
 	}
 }
