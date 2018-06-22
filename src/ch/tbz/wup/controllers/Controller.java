@@ -18,6 +18,7 @@ public class Controller implements KeyListener {
 	private IUserInterface _userInterface;
 	private Player _player;
 	private Map<Key, Boolean> _pressedKeys = new HashMap<Key, Boolean>();
+	private long _gameTicks = 0;
 	
 	public Controller(IUserInterface userInterface, Player player) {
 		_userInterface = userInterface;
@@ -42,7 +43,7 @@ public class Controller implements KeyListener {
 		_pressedKeys.put(Key.DOWN, false);
 		_pressedKeys.put(Key.RIGHT, false);
 		_pressedKeys.put(Key.LEFT, false);
-		keyDown();
+		startTicker();
 	}
 	
 	@Override
@@ -89,32 +90,40 @@ public class Controller implements KeyListener {
 		}
 	}
 	
-	private void keyDown() {
+	private void startTicker() {
 		while (true) {
-			System.out.println("Up: " + _pressedKeys.get(Key.UP));
-			System.out.println("Down: " + _pressedKeys.get(Key.DOWN));
-			System.out.println("Right: " + _pressedKeys.get(Key.RIGHT));
-			System.out.println("Left: " + _pressedKeys.get(Key.LEFT));
-			System.out.println("-------------------------------");
-			
-			if (_pressedKeys.get(Key.UP)) {
-				_userInterface.moveView(0, 1);
-			}
-			if (_pressedKeys.get(Key.DOWN)) {
-				_userInterface.moveView(0, -1);
-			}
-			if (_pressedKeys.get(Key.RIGHT)) {
-				_userInterface.moveView(1, 0);
-			}
-			if (_pressedKeys.get(Key.LEFT)) {
-				_userInterface.moveView(-1, 0);
-			}
+			movePlayer();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(20);
+				_gameTicks++;
+				
+				if (_gameTicks % 1 == 0) {
+					movePlayer();
+				}
+				
+				if (_gameTicks % 100 == 0) {
+					attemptSpawn();
+				}
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private void movePlayer() {
+		if (_pressedKeys.get(Key.UP)) {
+			_userInterface.moveView(0, 1);
+		}
+		if (_pressedKeys.get(Key.DOWN)) {
+			_userInterface.moveView(0, -1);
+		}
+		if (_pressedKeys.get(Key.RIGHT)) {
+			_userInterface.moveView(1, 0);
+		}
+		if (_pressedKeys.get(Key.LEFT)) {
+			_userInterface.moveView(-1, 0);
 		}
 	}
 	
