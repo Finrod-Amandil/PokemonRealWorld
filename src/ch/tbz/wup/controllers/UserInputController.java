@@ -14,15 +14,14 @@ import ch.tbz.wup.viewmodels.MainViewModel;
 import ch.tbz.wup.views.IUserInterface;
 import ch.tbz.wup.views.Key;
 
-public class Controller implements KeyListener {
-	private IUserInterface _userInterface;
+public class UserInputController implements KeyListener {
 	private Player _player;
+	private IUserInterface _userInterface;
 	private Map<Key, Boolean> _pressedKeys = new HashMap<Key, Boolean>();
-	private long _gameTicks = 0;
 	
-	public Controller(IUserInterface userInterface, Player player) {
-		_userInterface = userInterface;
+	public UserInputController(Player player, IUserInterface userInterface) {
 		_player = player;
+		_userInterface = userInterface;
 	}
 	
 	public void init() {
@@ -43,7 +42,6 @@ public class Controller implements KeyListener {
 		_pressedKeys.put(Key.DOWN, false);
 		_pressedKeys.put(Key.RIGHT, false);
 		_pressedKeys.put(Key.LEFT, false);
-		startTicker();
 	}
 	
 	@Override
@@ -63,9 +61,6 @@ public class Controller implements KeyListener {
 			break;
 		case KeyEvent.VK_LEFT:
 			_pressedKeys.put(Key.LEFT, true);
-			break;
-		case KeyEvent.VK_S:
-			attemptSpawn();
 			break;
 		default:
 			System.out.println("Pressed something else...");
@@ -90,29 +85,7 @@ public class Controller implements KeyListener {
 		}
 	}
 	
-	private void startTicker() {
-		while (true) {
-			movePlayer();
-			try {
-				Thread.sleep(20);
-				_gameTicks++;
-				
-				if (_gameTicks % 1 == 0) {
-					movePlayer();
-				}
-				
-				if (_gameTicks % 100 == 0) {
-					attemptSpawn();
-				}
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void movePlayer() {
+	public void movePlayer() {
 		if (_pressedKeys.get(Key.UP)) {
 			_userInterface.moveView(0, 1);
 		}
@@ -126,16 +99,4 @@ public class Controller implements KeyListener {
 			_userInterface.moveView(-1, 0);
 		}
 	}
-	
-	private void attemptSpawn() {
-		Random random = new Random();
-		int pokemonNumber = random.nextInt(801) + 1;
-		
-		_userInterface.showImage(
-				"./files/graphics/sprites/pokemon/" + pokemonNumber + ".png", 
-				new Rectangle(0, 0, 96, 96),
-				new Point(_player.getLocation().x, _player.getLocation().y + 100), 
-				_player.getLocation());
-	}
-
 }
