@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 import ch.tbz.wup.viewmodels.MainViewModel;
 
@@ -98,8 +99,18 @@ public class MainView implements IUserInterface {
 	}
 	
 	private void setPlayerSprite() {
+		JLabel crossHair = new JLabel(new ImageIcon("./files/graphics/sprites/player/crosshair.png"));
+		crossHair.setBounds(_frame.getWidth()/2 - 50, _frame.getHeight()/2 - 50, 100, 100);
+		_contentPane.add(crossHair);
+		_contentPane.moveToFront(crossHair);
+		
+		JLabel circle = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
+		circle.setBounds(_frame.getWidth()/2 - 24, _frame.getHeight()/2 - 24, 48, 48);
+		_contentPane.add(circle);
+		_contentPane.moveToFront(circle);
+		
 		JLabel playerSprite = new JLabel(new ImageIcon("./files/graphics/sprites/player/front_border.png"));
-		playerSprite.setBounds(_frame.getWidth()/2, _frame.getHeight()/2, 24, 25);
+		playerSprite.setBounds(_frame.getWidth()/2 - 15, _frame.getHeight()/2 -15, 30, 30);
 		_contentPane.add(playerSprite);
 		_contentPane.moveToFront(playerSprite);
 	}
@@ -121,10 +132,17 @@ public class MainView implements IUserInterface {
 	@Override
 	public void showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
 		JLabel image = new JLabel(new ImageIcon(filePath));
+		
 		Point imageLocation = UiUtils.transform(_frame.getBounds(), rc_point, rc_center);
-		image.setBounds(imageLocation.x, imageLocation.y, dimensions.width, dimensions.height);
+		image.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
 		_contentPane.add(image);
 		_contentPane.moveToFront(image);
 		_stationaryComponents.add(image);
+		
+		JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
+		circleImage.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
+		_contentPane.add(circleImage);
+		_contentPane.moveToFront(circleImage);
+		_stationaryComponents.add(circleImage);
 	}
 }

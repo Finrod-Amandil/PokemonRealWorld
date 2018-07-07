@@ -4,6 +4,8 @@ import ch.tbz.wup.models.Player;
 import ch.tbz.wup.views.IUserInterface;
 
 public class MainController {
+	public static final long TICKS_PER_SECOND = 20;
+	
 	private UserInputController _userInputController;
 	private SpawnController _spawnController;
 	private long _gameTicks = 0;
@@ -24,18 +26,11 @@ public class MainController {
 	
 	private void startTicker() {
 		while (true) {
-			_userInputController.movePlayer();
 			try {
-				Thread.sleep(20);
+				Thread.sleep(1000 / TICKS_PER_SECOND);
 				_gameTicks++;
-				
-				if (_gameTicks % 1 == 0) {
-					_userInputController.movePlayer();
-				}
-				
-				if (_gameTicks % 100 == 0) {
-					_spawnController.attemptSpawn();
-				}
+				_userInputController.tick();
+				_spawnController.tick();
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

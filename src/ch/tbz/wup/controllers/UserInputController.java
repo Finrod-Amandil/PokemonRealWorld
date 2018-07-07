@@ -1,12 +1,10 @@
 package ch.tbz.wup.controllers;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import ch.tbz.wup.models.Player;
 import ch.tbz.wup.models.Region;
@@ -42,6 +40,11 @@ public class UserInputController implements KeyListener {
 		_pressedKeys.put(Key.DOWN, false);
 		_pressedKeys.put(Key.RIGHT, false);
 		_pressedKeys.put(Key.LEFT, false);
+		movePlayer();
+	}
+	
+	public void tick() {
+		movePlayer();
 	}
 	
 	@Override
@@ -85,7 +88,7 @@ public class UserInputController implements KeyListener {
 		}
 	}
 	
-	public void movePlayer() {
+	private void movePlayer() {
 		if (_pressedKeys.get(Key.UP)) {
 			_userInterface.moveView(0, 1);
 		}
