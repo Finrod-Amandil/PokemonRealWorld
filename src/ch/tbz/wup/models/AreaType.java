@@ -1,6 +1,8 @@
 package ch.tbz.wup.models;
 
-public enum AreaType {
+import java.io.Serializable;
+
+public enum AreaType implements Serializable {
 	NONE,
 	REGIONBOUNDS,
 	CITY,
@@ -14,5 +16,6 @@ public enum AreaType {
 	SPORTSFIELD,
 	BATHS,
 	HOSPITAL,
-	TRACKFIELD
+	CEMETERY,
+	VINEYARD
 }
