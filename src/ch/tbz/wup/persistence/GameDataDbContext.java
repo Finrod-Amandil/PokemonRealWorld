@@ -12,13 +12,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import ch.tbz.wup.models.Area;
+import ch.tbz.wup.models.AreaType;
+import ch.tbz.wup.models.PokemonSpecies;
+import ch.tbz.wup.models.Spawn;
 
 public class GameDataDbContext {
 	private static final String gameDataDbLocation = "\\files\\data\\game_data.db";
 	
 	public void writeAreasToDatabase(List<Area> areas) {
+		List<Area> existingAreas = getAreasFromDatabase();
+		
 		Connection connection = null;
 		try{
 			connection = DriverManager.getConnection(getGameDataDbUrl());
@@ -32,11 +38,30 @@ public class GameDataDbContext {
 
 		        byte[] data = bos.toByteArray();
 		        
-		        String sql="INSERT INTO Area (id, area_serialized) VALUES(?, ?)";
-		        PreparedStatement query = connection.prepareStatement(sql);
-		        query.setInt(1, area.getId());
-		        query.setObject(2, data);
-		        query.executeUpdate();
+		        //Check if id already exists
+		        boolean doesAreaAlreadyExist = false;
+		        for (Area existingArea : existingAreas) {
+		        	if (existingArea.getId() == area.getId()) {
+		        		doesAreaAlreadyExist = true;
+		        		break;
+		        	}
+		        }
+		        
+		        String sql = "";
+		        if (doesAreaAlreadyExist) {
+		        	sql = "UPDATE Area SET area_serialized = ? WHERE id = ?";
+		        	PreparedStatement query = connection.prepareStatement(sql);
+			        query.setObject(1, data);
+			        query.setInt(2, area.getId());
+			        query.executeUpdate();
+		        }
+		        else {
+		        	sql = "INSERT INTO Area (id, area_serialized) VALUES(?, ?)";
+		        	PreparedStatement query = connection.prepareStatement(sql);
+			        query.setInt(1, area.getId());
+			        query.setObject(2, data);
+			        query.executeUpdate();
+		        }
 		        
 		        oos.close();
 		        bos.close();
@@ -76,6 +101,26 @@ public class GameDataDbContext {
         return areas;
 	}
 	
+	public List<Spawn> getSpawnsFromDatabase(Map<Integer, PokemonSpecies> pokemon) {
+		List<Spawn> spawns = new ArrayList<Spawn>();
+		
+		String sql = "SELECT * FROM Spawns";
+		Connection connection = null;
+		ResultSet rs;
+		
+		try {
+			connection = DriverManager.getConnection(getGameDataDbUrl());
+			PreparedStatement ps = connection.prepareStatement(sql);
+			rs = ps.executeQuery();
+			spawns = parseSpawns(rs, pokemon);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		return spawns;
+	}
+	
 	private String getGameDataDbUrl() {
 		String db_directory = gameDataDbLocation;
     	String complete_path = System.getProperty("user.dir") + db_directory;
@@ -90,8 +135,13 @@ public class GameDataDbContext {
 		while(rs.next())
         {
             try {
+            	byte[] data = rs.getBytes("area_serialized");
+            	if (data == null) {
+            		areas.add(Area.add(rs.getInt("id"), null, null, AreaType.NONE));
+            		continue;
+            	}
             	
-	            bais = new ByteArrayInputStream(rs.getBytes("area_serialized"));
+	            bais = new ByteArrayInputStream(data);
 	            ins = new ObjectInputStream(bais);
 	
 	            Area area = (Area)ins.readObject();
@@ -107,11 +157,29 @@ public class GameDataDbContext {
 				e.printStackTrace();
 			}
             finally {
-            	bais.close();
-            	ins.close();
+            	if (bais != null) {
+            		bais.close();
+            	}
+            	if (ins != null) {
+            		ins.close();
+            	}
             }
         }
 		
 		return areas;
+	}
+	
+	private List<Spawn> parseSpawns(ResultSet rs, Map<Integer, PokemonSpecies> pokemon) throws SQLException {
+		List<Spawn> spawns = new ArrayList<Spawn>();
+		
+		while(rs.next()) {
+			int speciesId = rs.getInt("species_id");
+			int areaId = rs.getInt("area_id");
+			int weight = rs.getInt("weight");
+			
+			spawns.add(new Spawn(pokemon.get(speciesId), weight, areaId));
+		}
+		
+		return spawns;
 	}
 }

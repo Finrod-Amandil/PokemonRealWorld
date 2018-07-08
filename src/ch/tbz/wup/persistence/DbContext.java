@@ -1,16 +1,18 @@
 package ch.tbz.wup.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.PokemonSpecies;
+import ch.tbz.wup.models.Spawn;
 
 public class DbContext implements IDbContext {
 	PokemonDbContext pokemonDbContext = new PokemonDbContext();
 	GameDataDbContext gameDataDbContext = new GameDataDbContext();
 	
 	@Override
-	public List<PokemonSpecies> getAllPokemon() {
+	public Map<Integer, PokemonSpecies> getAllPokemon() {
 		return pokemonDbContext.getPokemonFromDatabase();
 	}
 	
@@ -22,5 +24,10 @@ public class DbContext implements IDbContext {
 	@Override
 	public List<Area> getAllAreas() {
 		return gameDataDbContext.getAreasFromDatabase();
+	}
+
+	@Override
+	public List<Spawn> getAllSpawns() {
+		return gameDataDbContext.getSpawnsFromDatabase(pokemonDbContext.getPokemonFromDatabase());
 	}
 }

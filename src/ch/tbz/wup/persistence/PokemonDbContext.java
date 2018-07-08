@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import ch.tbz.wup.models.ElementalType;
 import ch.tbz.wup.models.PokemonSpecies;
@@ -14,7 +14,7 @@ import ch.tbz.wup.models.PokemonSpecies;
 public class PokemonDbContext {
 	private static final String pokemonDbLocation = "\\files\\data\\pokedex.sqlite";
 	
-	public List<PokemonSpecies> getPokemonFromDatabase() {
+	public Map<Integer, PokemonSpecies> getPokemonFromDatabase() {
 		// create connection for DB access
         Connection connection = null;
         
@@ -43,9 +43,9 @@ public class PokemonDbContext {
         return "jdbc:sqlite:" + complete_path;
 	}
 	
-	private List<PokemonSpecies> readPokemon(Connection connection) {
+	private Map<Integer, PokemonSpecies> readPokemon(Connection connection) {
 		
-		List<PokemonSpecies> pokemon_list = new ArrayList<PokemonSpecies>();
+		Map<Integer, PokemonSpecies> pokemon_list = new HashMap<Integer, PokemonSpecies>();
 		String sql = SqlStatements.GET_POKEMON;
         
         try (Statement statement = connection.createStatement();
@@ -53,12 +53,14 @@ public class PokemonDbContext {
             
             // loop through the result set
             while (result.next()) {
+            	int id = result.getInt("id");
             	PokemonSpecies species = PokemonSpecies.builder()
+            			.id(id)
             			.name(result.getString("name"))
             			.type1(ElementalType.getInstance(result.getString("type1")))
             			.type2(ElementalType.getInstance(result.getString("type2")))
             			.build();
-                pokemon_list.add(species);
+                pokemon_list.put(id, species);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

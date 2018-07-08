@@ -1,6 +1,7 @@
 package ch.tbz.wup;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.PokemonSpecies;
@@ -12,18 +13,16 @@ public class PokemonStarter {
 	public static void main(String[] args) {
 		IDbContext context = new DbContext();
 		List<Area> areas = context.getAllAreas();
-		for (Area area : areas) {
-			System.out.println("ID = " + area.getId() + " Name = " + area.getName() + " Type = " + area.getType().toString());
-		}
 		
-		StartUp.configure();
+		//StartUp.configure();
 		
-		List<PokemonSpecies> all_species = context.getAllPokemon();
-		for (PokemonSpecies species: all_species) {
+		Map<Integer, PokemonSpecies> all_species = context.getAllPokemon();
+		for (int id : all_species.keySet()) {
+			PokemonSpecies species = all_species.get(id);
 			if (species.getType2() == null) {
-				System.out.println(species.getName() + ", " + species.getType1().getName());
+				System.out.println(id + ": " + species.getName() + ", " + species.getType1().getName());
 			} else {
-				System.out.println(species.getName() + ", " + species.getType1().getName() + ", " + species.getType2().getName());
+				System.out.println(id + ": " + species.getName() + ", " + species.getType1().getName() + ", " + species.getType2().getName());
 			}
 		}
 	}
