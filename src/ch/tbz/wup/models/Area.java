@@ -1,5 +1,6 @@
 package ch.tbz.wup.models;
 
+import java.awt.Point;
 import java.awt.Polygon;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,5 +66,16 @@ public class Area implements Serializable {
 	
 	private void addSection(Polygon section) {
 		_sectionBounds.add(new AreaSection(section));
+	}
+
+	public boolean contains(Point spawnPoint) {
+		for (AreaSection section : _sectionBounds) {
+			if (section.boundingBox.contains(spawnPoint)) {
+				if (section.bounds.contains(spawnPoint)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
