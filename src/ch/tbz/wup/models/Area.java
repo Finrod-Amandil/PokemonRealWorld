@@ -31,13 +31,14 @@ public class Area implements Serializable {
 	
 	private int _id;
 	private String _name;
-	private List<Polygon> _sectionBounds;
+	private List<AreaSection> _sectionBounds;
 	private AreaType _type;
+	private List<Spawn> _spawns = new ArrayList<Spawn>();
 	
 	private Area(int id, Polygon bounds, String name, AreaType type) {
 		_id = id;
-		_sectionBounds = new ArrayList<Polygon>();
-		_sectionBounds.add(bounds);
+		_sectionBounds = new ArrayList<AreaSection>();
+		_sectionBounds.add(new AreaSection(bounds));
 		_type = type;
 		_name = name;
 	} 
@@ -54,7 +55,15 @@ public class Area implements Serializable {
 		return _id;
 	}
 	
+	public void addSpawn(Spawn spawn) {
+		_spawns.add(spawn);
+	}
+	
+	public List<Spawn> getSpawns() {
+		return new ArrayList<Spawn>(_spawns);
+	}
+	
 	private void addSection(Polygon section) {
-		_sectionBounds.add(section);
+		_sectionBounds.add(new AreaSection(section));
 	}
 }
