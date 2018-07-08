@@ -1,9 +1,11 @@
 package ch.tbz.wup.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementalType {
+public class ElementalType implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static List<ElementalType> _allTypes = new ArrayList<ElementalType>();
 	
 	public static ElementalType getInstance(String name) {

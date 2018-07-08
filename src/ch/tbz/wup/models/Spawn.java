@@ -1,13 +1,19 @@
 package ch.tbz.wup.models;
 
-public class Spawn {
+import java.io.Serializable;
+
+public class Spawn implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private PokemonSpecies _species;
 	private int _weight;
+	private int _areaId;
 	
-	public Spawn(PokemonSpecies species, int weight) {
+	public Spawn(PokemonSpecies species, int weight, int areaId) {
 		_species = species;
 		_weight = weight;
+		_areaId = areaId;
 	}
 	
 	public PokemonSpecies getSpecies() {
@@ -22,4 +28,13 @@ public class Spawn {
 	public void setWeight(int weight) {
 		this._weight = weight;
 	}
+
+	public int getAreaId() {
+		return _areaId;
+	}
+
+	public void setAreaId(int areaId) {
+		_areaId = areaId;
+	}
+	
 }

@@ -1,7 +1,7 @@
 package ch.tbz.wup.persistence;
 
 public class SqlStatements {
-	public static final String GET_POKEMON = "SELECT pokemon_species_names.name AS 'name', type1.type_name AS 'type1', type2.type_name AS 'type2'" +
+	public static final String GET_POKEMON = "SELECT pokemon_species.id AS 'id', pokemon_species_names.name AS 'name', type1.type_name AS 'type1', type2.type_name AS 'type2'" +
 			"FROM pokemon_species " + 
 			"JOIN pokemon_species_names ON pokemon_species_names.pokemon_species_id = pokemon_species.id " + 
 			"JOIN language_names lang1 ON lang1.language_id = pokemon_species_names.local_language_id " +  
