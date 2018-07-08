@@ -17,15 +17,13 @@ public class MainController {
 	private Player _player;
 	private IUserInterface _userInterface;
 	private List<Area> _allAreas;
-	private Map<Integer, PokemonSpecies> _allPokemon;
 	
-	public MainController(Player player, IUserInterface userInterface, List<Area> allAreas, Map<Integer, PokemonSpecies> allPokemon) {
+	public MainController(Player player, IUserInterface userInterface, List<Area> allAreas) {
 		_player = player;
 		_userInterface = userInterface;
 		_allAreas = allAreas;
-		_allPokemon = allPokemon;
 		_userInputController = new UserInputController(_player, _userInterface);
-		_spawnController = new SpawnController(_player, _userInterface, _allAreas, _allPokemon);
+		_spawnController = new SpawnController(_player, _userInterface, _allAreas);
 	}
 	
 	public void init() {
@@ -38,8 +36,8 @@ public class MainController {
 			try {
 				Thread.sleep(1000 / TICKS_PER_SECOND);
 				_gameTicks++;
-				_userInputController.tick();
-				_spawnController.tick();
+				_userInputController.tick(_gameTicks);
+				_spawnController.tick(_gameTicks);
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

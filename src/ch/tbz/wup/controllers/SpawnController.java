@@ -2,21 +2,26 @@ package ch.tbz.wup.controllers;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.swing.JLabel;
 
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.AreaType;
 import ch.tbz.wup.models.Player;
 import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.models.Spawn;
+import ch.tbz.wup.models.SpawnedPokemon;
 import ch.tbz.wup.views.IUserInterface;
 
 public class SpawnController {
 	
-	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 20;
+	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 60;
+	private static final int SECONDS_UNTIL_DESPANW = 20;
 	private static final int MINIMUM_SPAWN_RADIUS = 50;
 	private static final int MAXIMUM_SPAWN_RADIUS = 150;
 	private static final int SPRITE_SIZE = 48;
@@ -26,25 +31,29 @@ public class SpawnController {
 	private Player _player;
 	private IUserInterface _userInterface;
 	private List<Area> _allAreas;
-	private Map<Integer, PokemonSpecies> _allPokemon;
 	
 	private long _nextSpawnCountdownTicks = 20 * MainController.TICKS_PER_SECOND;
 	private Random _random = new Random();
 	
-	public SpawnController(Player player, IUserInterface userInterface, List<Area> allAreas, Map<Integer, PokemonSpecies> allPokemon) {
+	private List<SpawnedPokemon> _activePokemon = new ArrayList<SpawnedPokemon>();
+	
+	public SpawnController(Player player, IUserInterface userInterface, List<Area> allAreas) {
 		_player = player;
 		_userInterface = userInterface;
 		_allAreas = allAreas;
-		_allPokemon = allPokemon;
 	}
 	
-	public void tick() {
+	public void tick(long totalTicks) {
 		if (_nextSpawnCountdownTicks <= 0) {
 			attemptSpawn();
 			_nextSpawnCountdownTicks = _random.nextInt((int)(MAX_SECONDS_UNTIL_NEXT_SPAWN * MainController.TICKS_PER_SECOND));
 		}
 		else {
 			_nextSpawnCountdownTicks--;
+		}
+		
+		if (totalTicks % 10 == 0) {
+			updateSpawnedPokemon();
 		}
 	}
 	
@@ -63,12 +72,13 @@ public class SpawnController {
 		}
 		
 		int pokemonNumber = spawn.getSpecies().getId();
+		JLabel sprite = _userInterface.showImage(
+			SPRITE_FILEPATH + pokemonNumber + SPRITE_FILE_EXTENSION, 
+			new Rectangle(0, 0, SPRITE_SIZE, SPRITE_SIZE),
+			rc_spawnPoint,
+			_player.getLocation());
 		
-		_userInterface.showImage(
-				SPRITE_FILEPATH + pokemonNumber + SPRITE_FILE_EXTENSION, 
-				new Rectangle(0, 0, SPRITE_SIZE, SPRITE_SIZE),
-				rc_spawnPoint,
-				_player.getLocation());
+		_activePokemon.add(new SpawnedPokemon(spawn.getSpecies(), rc_spawnPoint, sprite));
 	}
 	
 	private Point getSpawnPoint() {
@@ -92,6 +102,17 @@ public class SpawnController {
 		}
 		
 		return spawnAreas;
+	}
+	
+	private void updateSpawnedPokemon() {
+		List<SpawnedPokemon> tempList = new ArrayList<SpawnedPokemon>(_activePokemon);
+		for (SpawnedPokemon pokemon : tempList) {
+			if (pokemon.getSpawnTime().plusSeconds(SECONDS_UNTIL_DESPANW).isBefore(LocalDateTime.now())) {
+				_userInterface.hideImage(pokemon.getSprite());
+				_activePokemon.remove(pokemon);
+				System.out.println("Despawning " + pokemon.getSpecies().getName() + "...");
+			}
+		}
 	}
 	
 	private List<Area> filterAreas(List<Area> spawnAreas) {

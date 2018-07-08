@@ -43,7 +43,7 @@ public class UserInputController implements KeyListener {
 		movePlayer();
 	}
 	
-	public void tick() {
+	public void tick(long totalTicks) {
 		movePlayer();
 	}
 	

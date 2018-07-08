@@ -16,10 +16,6 @@ public class PokemonSpecies implements Serializable {
 	
 	private PokemonSpecies() {}
 	
-	public SpawnedPokemon getInstance() {
-		return new SpawnedPokemon(this);
-	}
-	
 	public int getId() {
 		return _id;
 	}
