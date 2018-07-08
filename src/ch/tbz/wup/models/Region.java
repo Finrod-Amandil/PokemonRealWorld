@@ -3,6 +3,7 @@ package ch.tbz.wup.models;
 import java.awt.Polygon;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Region {
 	private List<Area> _areas;
 	private Polygon _bounds;

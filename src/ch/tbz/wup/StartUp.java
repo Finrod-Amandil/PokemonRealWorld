@@ -20,9 +20,8 @@ public class StartUp {
 		
 		//Load data from DB
 		List<Area> allAreas = dbContext.getAllAreas();
-		Map<Integer, PokemonSpecies> allPokemon = dbContext.getAllPokemon();
 		
-		MainController controller = new MainController(player, userInterface, allAreas, allPokemon);
+		MainController controller = new MainController(player, userInterface, allAreas);
 		controller.init();
 	}
 	
