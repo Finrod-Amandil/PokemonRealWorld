@@ -91,15 +91,19 @@ public class UserInputController implements KeyListener {
 	private void movePlayer() {
 		if (_pressedKeys.get(Key.UP)) {
 			_userInterface.moveView(0, 1);
+			_player.setLocation(new Point(_player.getLocation().x, _player.getLocation().y + 1));
 		}
 		if (_pressedKeys.get(Key.DOWN)) {
 			_userInterface.moveView(0, -1);
+			_player.setLocation(new Point(_player.getLocation().x, _player.getLocation().y - 1));
 		}
 		if (_pressedKeys.get(Key.RIGHT)) {
 			_userInterface.moveView(1, 0);
+			_player.setLocation(new Point(_player.getLocation().x + 1, _player.getLocation().y));
 		}
 		if (_pressedKeys.get(Key.LEFT)) {
 			_userInterface.moveView(-1, 0);
+			_player.setLocation(new Point(_player.getLocation().x - 1, _player.getLocation().y));
 		}
 	}
 }
