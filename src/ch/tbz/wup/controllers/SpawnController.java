@@ -5,25 +5,26 @@ import java.awt.Rectangle;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JLabel;
 
+import ch.tbz.wup.IObservable;
+import ch.tbz.wup.IObserver;
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.AreaType;
 import ch.tbz.wup.models.Player;
-import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.models.Spawn;
 import ch.tbz.wup.models.SpawnedPokemon;
 import ch.tbz.wup.views.IUserInterface;
 
-public class SpawnController {
+public class SpawnController implements IObserver {
 	
-	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 60;
-	private static final int SECONDS_UNTIL_DESPANW = 20;
+	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 20;
+	private static final int SECONDS_UNTIL_DESPAWN = 60;
 	private static final int MINIMUM_SPAWN_RADIUS = 50;
 	private static final int MAXIMUM_SPAWN_RADIUS = 150;
+	private static final double MIN_ENCOUNTER_DISTANCE = 30;
 	private static final int SPRITE_SIZE = 48;
 	private static final String SPRITE_FILEPATH = "./files/graphics/sprites/pokemon/";
 	private static final String SPRITE_FILE_EXTENSION = ".png";
@@ -39,8 +40,16 @@ public class SpawnController {
 	
 	public SpawnController(Player player, IUserInterface userInterface, List<Area> allAreas) {
 		_player = player;
+		_player.addObserver(this);
 		_userInterface = userInterface;
 		_allAreas = allAreas;
+	}
+	
+	@Override
+	public void onObservableChanged(IObservable observable) {
+		if (observable instanceof Player) {
+			checkEncounter();
+		}
 	}
 	
 	public void tick(long totalTicks) {
@@ -107,11 +116,38 @@ public class SpawnController {
 	private void updateSpawnedPokemon() {
 		List<SpawnedPokemon> tempList = new ArrayList<SpawnedPokemon>(_activePokemon);
 		for (SpawnedPokemon pokemon : tempList) {
-			if (pokemon.getSpawnTime().plusSeconds(SECONDS_UNTIL_DESPANW).isBefore(LocalDateTime.now())) {
+			if (pokemon.getSpawnTime().plusSeconds(SECONDS_UNTIL_DESPAWN).isBefore(LocalDateTime.now())) {
 				_userInterface.hideImage(pokemon.getSprite());
 				_activePokemon.remove(pokemon);
-				System.out.println("Despawning " + pokemon.getSpecies().getName() + "...");
 			}
+		}
+	}
+	
+	private void checkEncounter() {
+		boolean isEncounter = false;
+		double distance = 0;
+		SpawnedPokemon encounteredPokemon = null;
+		for (SpawnedPokemon pokemon : _activePokemon) {
+			Point rc_pokemon = pokemon.getLocation();
+			Point rc_player = _player.getLocation();
+			
+			int dX = rc_pokemon.x - rc_player.x;
+			int dY = rc_pokemon.y - rc_player.y;
+			
+			double newDistance = Math.sqrt((dX * dX) + (dY * dY));
+			
+			if (newDistance <= MIN_ENCOUNTER_DISTANCE) {
+				if ((isEncounter && newDistance < distance) || !isEncounter) {
+					isEncounter = true;
+					distance = newDistance;
+					encounteredPokemon = pokemon;
+				}
+			}
+		}
+		
+		if (isEncounter) {
+			_userInterface.hideImage(encounteredPokemon.getSprite());
+			_activePokemon.remove(encounteredPokemon);
 		}
 	}
 	
@@ -182,6 +218,6 @@ public class SpawnController {
 			}
 		}
 		
-		return allSpawns.get(allSpawns.size() - 1);
+		return allSpawns.get(0);
 	}
 }
