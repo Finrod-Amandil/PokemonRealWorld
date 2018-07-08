@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.swing.JLabel;
+
 import ch.tbz.wup.viewmodels.MainViewModel;
 
 public interface IUserInterface {
@@ -11,5 +13,6 @@ public interface IUserInterface {
 	public void show();
 	public Component getWindow();
 	public void moveView(int dX, int dY);
-	public void showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center);
+	public JLabel showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center);
+	public void hideImage(JLabel label);
 }

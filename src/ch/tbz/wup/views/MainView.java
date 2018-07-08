@@ -130,7 +130,7 @@ public class MainView implements IUserInterface {
 	}
 
 	@Override
-	public void showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
+	public JLabel showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
 		JLabel image = new JLabel(new ImageIcon(filePath));
 		
 		Point imageLocation = UiUtils.transform(_frame.getBounds(), rc_point, rc_center);
@@ -139,10 +139,20 @@ public class MainView implements IUserInterface {
 		_contentPane.moveToFront(image);
 		_stationaryComponents.add(image);
 		
-		JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
+		/*JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
 		circleImage.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
 		_contentPane.add(circleImage);
 		_contentPane.moveToFront(circleImage);
-		_stationaryComponents.add(circleImage);
+		_stationaryComponents.add(circleImage);*/
+		
+		return image;
+	}
+
+	@Override
+	public void hideImage(JLabel label) {
+		_stationaryComponents.remove(label);
+		_contentPane.remove(label);
+		_contentPane.moveToBack(label);
+		label.setVisible(false);
 	}
 }
