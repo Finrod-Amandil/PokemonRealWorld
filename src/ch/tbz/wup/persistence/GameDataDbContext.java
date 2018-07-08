@@ -147,7 +147,6 @@ public class GameDataDbContext {
 	            Area area = (Area)ins.readObject();
 	            areas.add(area);
 	
-	            System.out.println("Object in value :" + area.getName());
 	            ins.close();
             }
             catch (ClassCastException cce) {
