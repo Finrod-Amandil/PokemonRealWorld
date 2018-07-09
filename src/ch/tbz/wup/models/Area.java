@@ -64,18 +64,18 @@ public class Area implements Serializable {
 		return new ArrayList<Spawn>(_spawns);
 	}
 	
-	private void addSection(Polygon section) {
-		_sectionBounds.add(new AreaSection(section));
-	}
-
-	public boolean contains(Point spawnPoint) {
+	public boolean contains(Point point) {
 		for (AreaSection section : _sectionBounds) {
-			if (section.boundingBox.contains(spawnPoint)) {
-				if (section.bounds.contains(spawnPoint)) {
+			if (section.boundingBox.contains(point)) {
+				if (section.bounds.contains(point)) {
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	
+	private void addSection(Polygon section) {
+		_sectionBounds.add(new AreaSection(section));
 	}
 }

@@ -19,22 +19,12 @@ public class Spawn implements Serializable {
 	public PokemonSpecies getSpecies() {
 		return _species;
 	}
-	public void setSpecies(PokemonSpecies species) {
-		this._species = species;
-	}
+	
 	public int getWeight() {
 		return _weight;
-	}
-	public void setWeight(int weight) {
-		this._weight = weight;
 	}
 
 	public int getAreaId() {
 		return _areaId;
 	}
-
-	public void setAreaId(int areaId) {
-		_areaId = areaId;
-	}
-	
 }

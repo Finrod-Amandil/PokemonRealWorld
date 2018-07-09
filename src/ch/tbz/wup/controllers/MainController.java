@@ -1,11 +1,9 @@
 package ch.tbz.wup.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.Player;
-import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.views.IUserInterface;
 
 public class MainController {

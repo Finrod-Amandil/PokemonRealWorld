@@ -26,11 +26,11 @@ public class ElementalType implements Serializable {
 	
 	private String _name;
 	
-	private ElementalType(String name) {
-		_name = name;
-	}
-	
 	public String getName() {
 		return _name;
+	}
+	
+	private ElementalType(String name) {
+		_name = name;
 	}
 }

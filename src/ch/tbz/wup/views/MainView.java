@@ -70,6 +70,33 @@ public class MainView implements IUserInterface {
 		
 	}
 	
+	@Override
+	public JLabel showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
+		JLabel image = new JLabel(new ImageIcon(filePath));
+		
+		Point imageLocation = UiUtils.transform(_frame.getBounds(), rc_point, rc_center);
+		image.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
+		_contentPane.add(image);
+		_contentPane.moveToFront(image);
+		_stationaryComponents.add(image);
+		
+		/*JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
+		circleImage.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
+		_contentPane.add(circleImage);
+		_contentPane.moveToFront(circleImage);
+		_stationaryComponents.add(circleImage);*/
+		
+		return image;
+	}
+
+	@Override
+	public void hideImage(JLabel label) {
+		_stationaryComponents.remove(label);
+		_contentPane.remove(label);
+		_contentPane.moveToBack(label);
+		label.setVisible(false);
+	}
+	
 	private void initialize(MainViewModel viewModel) {
 		//Set properties of main frame
 	    _frame = new JFrame();
@@ -126,32 +153,5 @@ public class MainView implements IUserInterface {
 		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, viewModel.playerLocation);
 		
 		_map.setBounds(wc_upperLeftCorner.x, wc_upperLeftCorner.y, regionBounds.width, regionBounds.height);
-	}
-
-	@Override
-	public JLabel showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
-		JLabel image = new JLabel(new ImageIcon(filePath));
-		
-		Point imageLocation = UiUtils.transform(_frame.getBounds(), rc_point, rc_center);
-		image.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
-		_contentPane.add(image);
-		_contentPane.moveToFront(image);
-		_stationaryComponents.add(image);
-		
-		/*JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
-		circleImage.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
-		_contentPane.add(circleImage);
-		_contentPane.moveToFront(circleImage);
-		_stationaryComponents.add(circleImage);*/
-		
-		return image;
-	}
-
-	@Override
-	public void hideImage(JLabel label) {
-		_stationaryComponents.remove(label);
-		_contentPane.remove(label);
-		_contentPane.moveToBack(label);
-		label.setVisible(false);
 	}
 }
