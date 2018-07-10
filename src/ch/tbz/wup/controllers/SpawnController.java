@@ -14,6 +14,7 @@ import ch.tbz.wup.IObserver;
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.AreaType;
 import ch.tbz.wup.models.Player;
+import ch.tbz.wup.models.PlayerStateChange;
 import ch.tbz.wup.models.Spawn;
 import ch.tbz.wup.models.SpawnedPokemon;
 import ch.tbz.wup.views.IUserInterface;
@@ -68,8 +69,8 @@ public class SpawnController implements IObserver {
 	 * @param observable  The object that changed state and raised the notification.
 	 */
 	@Override
-	public void onObservableChanged(IObservable observable) {
-		if (observable instanceof Player) {
+	public void onObservableChanged(IObservable observable, int changeId) {
+		if (observable instanceof Player && changeId == PlayerStateChange.LOCATION_CHANGED.ordinal()) {
 			checkEncounter();
 		}
 	}
@@ -201,9 +202,9 @@ public class SpawnController implements IObserver {
 		}
 		
 		if (isEncounter) {
-			//TODO
 			_userInterface.hideImage(encounteredPokemon.getSprite());
 			_activePokemon.remove(encounteredPokemon);
+			_player.addPokemonToPokedex(encounteredPokemon.getSpecies());
 		}
 	}
 	
