@@ -1,6 +1,6 @@
 package ch.tbz.wup.models;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +8,7 @@ public class Pokedex {
 	private Map<Integer, PokedexEntry> _entries;
 	
 	public Pokedex(List<PokemonSpecies> pokemonSpecies) {
-		_entries = new HashMap<Integer, PokedexEntry>();
+		_entries = new LinkedHashMap<Integer, PokedexEntry>();
 		
 		for (PokemonSpecies pokemon : pokemonSpecies) {
 			_entries.put(pokemon.getId(), new PokedexEntry(pokemon));
@@ -16,7 +16,7 @@ public class Pokedex {
 	}
 	
 	public Map<Integer, PokedexEntry> getPokemon() {
-		return new HashMap<Integer, PokedexEntry>(_entries);
+		return new LinkedHashMap<Integer, PokedexEntry>(_entries);
 	}
 	
 	public void discover(PokemonSpecies species) {

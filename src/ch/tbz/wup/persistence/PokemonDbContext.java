@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import ch.tbz.wup.models.ElementalType;
@@ -45,7 +45,7 @@ public class PokemonDbContext {
 	
 	private Map<Integer, PokemonSpecies> readPokemon(Connection connection) {
 		
-		Map<Integer, PokemonSpecies> pokemon_list = new HashMap<Integer, PokemonSpecies>();
+		Map<Integer, PokemonSpecies> pokemon_list = new LinkedHashMap<Integer, PokemonSpecies>();
 		String sql = SqlStatements.GET_POKEMON;
         
         try (Statement statement = connection.createStatement();
