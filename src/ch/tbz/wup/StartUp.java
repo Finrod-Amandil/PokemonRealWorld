@@ -5,6 +5,7 @@ import java.util.List;
 import ch.tbz.wup.controllers.MainController;
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.Player;
+import ch.tbz.wup.models.Pokedex;
 import ch.tbz.wup.persistence.DbContext;
 import ch.tbz.wup.persistence.IDbContext;
 import ch.tbz.wup.views.IUserInterface;
@@ -25,6 +26,8 @@ public class StartUp {
 		
 		//Load data from DB
 		List<Area> allAreas = dbContext.getAllAreas();
+		Pokedex pokedex = dbContext.getPokedex(1);
+		player.setPokedex(pokedex);
 		
 		//Create and initialize controller
 		MainController controller = new MainController(player, userInterface, allAreas);

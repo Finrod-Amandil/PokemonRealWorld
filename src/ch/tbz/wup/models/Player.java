@@ -19,12 +19,32 @@ public class Player implements IObservable {
 	
 	private List<IObserver> _observers = new ArrayList<IObserver>();
 	private Point _location = new Point(0, 0);
+	private Pokedex _pokedex;
 	
 	private Player() {}
 	
+	public void setPokedex(Pokedex pokedex) {
+		_pokedex = pokedex;
+	}
+	
+	public Pokedex getPokedex() {
+		return _pokedex;
+	}
+	
+	public void addPokemonToPokedex(PokemonSpecies species) {
+		if (!_pokedex.isDiscovered(species)) {
+			_pokedex.discover(species);
+			notifyObservers(PlayerStateChange.POKEDEX_CHANGED.ordinal());
+		}
+	}
+	
+	public boolean isPokedexComplete() {
+		return _pokedex.isComplete();
+	}
+	
 	public void setLocation(Point location) {
 		_location = location;
-		notifyObservers();
+		notifyObservers(PlayerStateChange.LOCATION_CHANGED.ordinal());
 	}
 	
 	public Point getLocation() {
@@ -42,9 +62,9 @@ public class Player implements IObservable {
 	}
 
 	@Override
-	public void notifyObservers() {
+	public void notifyObservers(int changeId) {
 		for (IObserver observer : _observers) {
-			observer.onObservableChanged(this);
+			observer.onObservableChanged(this, changeId);
 		}
 	}
 }

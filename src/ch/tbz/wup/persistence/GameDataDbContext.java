@@ -16,6 +16,7 @@ import java.util.Map;
 
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.AreaType;
+import ch.tbz.wup.models.Pokedex;
 import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.models.Spawn;
 
@@ -119,6 +120,36 @@ public class GameDataDbContext {
 		}
 		
 		return spawns;
+	}
+	
+	public Pokedex getPokedexFromDatabase(int regionId, Map<Integer, PokemonSpecies> pokemon) {
+		List<Integer> pokemonIds = new ArrayList<Integer>();
+		List<PokemonSpecies> species = new ArrayList<PokemonSpecies>();
+		
+		String sql = "SELECT * FROM Pokedex WHERE fk_region = ?";
+		Connection connection = null;
+		ResultSet rs;
+		
+		try {
+			connection = DriverManager.getConnection(getGameDataDbUrl());
+			PreparedStatement query = connection.prepareStatement(sql);
+			query.setInt(1, regionId);
+			rs = query.executeQuery();
+			
+			while (rs.next()) {
+				pokemonIds.add(rs.getInt("fk_species"));
+			}
+			
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		for (Integer pokemonId : pokemonIds) {
+			species.add(pokemon.get(pokemonId));
+		}
+		
+		return new Pokedex(species);
 	}
 	
 	private String getGameDataDbUrl() {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.tbz.wup.models.Area;
+import ch.tbz.wup.models.Pokedex;
 import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.models.Spawn;
 
@@ -29,5 +30,10 @@ public class DbContext implements IDbContext {
 	@Override
 	public List<Spawn> getAllSpawns() {
 		return gameDataDbContext.getSpawnsFromDatabase(pokemonDbContext.getPokemonFromDatabase());
+	}
+
+	@Override
+	public Pokedex getPokedex(int regionId) {
+		return gameDataDbContext.getPokedexFromDatabase(regionId, pokemonDbContext.getPokemonFromDatabase());
 	}
 }
