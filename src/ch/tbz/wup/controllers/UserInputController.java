@@ -12,21 +12,37 @@ import ch.tbz.wup.viewmodels.MainViewModel;
 import ch.tbz.wup.views.IUserInterface;
 import ch.tbz.wup.views.Key;
 
+/**
+ * Controller that handles all actions related to user inputs. Implements KeyListener interface
+ * to receive KeyEvents.
+ */
 public class UserInputController implements KeyListener {
 	private Player _player;
 	private IUserInterface _userInterface;
+	
+	//Overview over all directional keys and whether they are currently pressed.
 	private Map<Key, Boolean> _pressedKeys = new HashMap<Key, Boolean>();
 	
+	/**
+	 * Instantiates the controller with the passed objects.
+	 * 
+	 * @param player  The Singleton player.
+	 * @param userInterface  The Singleton user interface.
+	 */
 	public UserInputController(Player player, IUserInterface userInterface) {
 		_player = player;
 		_userInterface = userInterface;
 	}
 	
+	/**
+	 * Initiates the controller. Sets up the view and adds itself as KeyListener.
+	 */
 	public void init() {
 		_player.setLocation(new Point(683570, 246830));
 		
 		Region region = new Region("zurich", null);
 		
+		//Set up UI
 		MainViewModel viewModel = new MainViewModel();
 		viewModel.playerLocation = _player.getLocation();
 		viewModel.regionBounds = region.getBounds();
@@ -36,20 +52,35 @@ public class UserInputController implements KeyListener {
 		_userInterface.getWindow().addKeyListener(this);
 		_userInterface.show();
 		
+		//Initialise keys
 		_pressedKeys.put(Key.UP, false);
 		_pressedKeys.put(Key.DOWN, false);
 		_pressedKeys.put(Key.RIGHT, false);
 		_pressedKeys.put(Key.LEFT, false);
+		
+		//Move player to start position.
 		movePlayer();
 	}
 	
+	/**
+	 * Moves the player every tick, if a key is pressed.
+	 * 
+	 * @param totalTicks
+	 */
 	public void tick(long totalTicks) {
 		movePlayer();
 	}
 	
+	/**
+	 * (No Action on keyTyped)
+	 */
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
+	/**
+	 * If a directional key is pressed, updates the corresponding entry
+	 * in the key tracking Map to pressed.
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -65,11 +96,13 @@ public class UserInputController implements KeyListener {
 		case KeyEvent.VK_LEFT:
 			_pressedKeys.put(Key.LEFT, true);
 			break;
-		default:
-			System.out.println("Pressed something else...");
 		}
 	}
 	
+	/**
+	 * If a directional key is released, updates the corresponding entry
+	 * in the key tracking Map to released.
+	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -88,6 +121,8 @@ public class UserInputController implements KeyListener {
 		}
 	}
 	
+	//Checks which directional keys are pressed and moves the player one unit into the corresponding
+	//directions.
 	private void movePlayer() {
 		if (_pressedKeys.get(Key.UP)) {
 			_userInterface.moveView(0, 1);
