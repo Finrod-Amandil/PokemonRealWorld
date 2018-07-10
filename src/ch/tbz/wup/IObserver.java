@@ -12,5 +12,5 @@ public interface IObserver {
 	 * 
 	 * @param observable  The object that changed state.
 	 */
-	void onObservableChanged(IObservable observable);
+	void onObservableChanged(IObservable observable, int changeId);
 }

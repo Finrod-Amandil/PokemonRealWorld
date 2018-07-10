@@ -22,5 +22,5 @@ public interface IObservable {
 	/**
 	 * Calls the onObservableChanged() method of each active observer on this object.
 	 */
-	public void notifyObservers();
+	public void notifyObservers(int changeIndex);
 }
