@@ -12,8 +12,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 import ch.tbz.wup.viewmodels.MainViewModel;
+import ch.tbz.wup.viewmodels.PokedexViewModel;
 
 public class MainView implements IUserInterface {
 	private static MainView _instance;
@@ -30,6 +32,7 @@ public class MainView implements IUserInterface {
 	private JFrame _frame;
 	private JLayeredPane _contentPane;
 	private JLayeredPane _map;
+	private PokedexView _pokedexView;
 	
 	private List<Component> _stationaryComponents = new ArrayList<Component>();
 	
@@ -80,12 +83,6 @@ public class MainView implements IUserInterface {
 		_contentPane.moveToFront(image);
 		_stationaryComponents.add(image);
 		
-		/*JLabel circleImage = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
-		circleImage.setBounds(imageLocation.x - (dimensions.width / 2), imageLocation.y - (dimensions.height / 2), dimensions.width, dimensions.height);
-		_contentPane.add(circleImage);
-		_contentPane.moveToFront(circleImage);
-		_stationaryComponents.add(circleImage);*/
-		
 		return image;
 	}
 
@@ -119,22 +116,11 @@ public class MainView implements IUserInterface {
 			_contentPane.add(_map);
 			setPlayerSprite();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	private void setPlayerSprite() {
-		JLabel crossHair = new JLabel(new ImageIcon("./files/graphics/sprites/player/crosshair.png"));
-		crossHair.setBounds(_frame.getWidth()/2 - 50, _frame.getHeight()/2 - 50, 100, 100);
-		_contentPane.add(crossHair);
-		_contentPane.moveToFront(crossHair);
-		
-		JLabel circle = new JLabel(new ImageIcon("./files/graphics/sprites/pokemon/0.png"));
-		circle.setBounds(_frame.getWidth()/2 - 24, _frame.getHeight()/2 - 24, 48, 48);
-		_contentPane.add(circle);
-		_contentPane.moveToFront(circle);
-		
 		JLabel playerSprite = new JLabel(new ImageIcon("./files/graphics/sprites/player/front_border.png"));
 		playerSprite.setBounds(_frame.getWidth()/2 - 15, _frame.getHeight()/2 -15, 30, 30);
 		_contentPane.add(playerSprite);
@@ -153,5 +139,19 @@ public class MainView implements IUserInterface {
 		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, viewModel.playerLocation);
 		
 		_map.setBounds(wc_upperLeftCorner.x, wc_upperLeftCorner.y, regionBounds.width, regionBounds.height);
+	}
+
+	@Override
+	public void showPokedex(PokedexViewModel pokedex) {
+		_pokedexView = new PokedexView(pokedex);
+		_contentPane.add(_pokedexView);
+		_contentPane.moveToFront(_pokedexView);
+	}
+
+	@Override
+	public void hidePokedex() {
+		_contentPane.moveToBack(_pokedexView);
+		_contentPane.remove(_pokedexView);
+		_pokedexView.setVisible(false);
 	}
 }
