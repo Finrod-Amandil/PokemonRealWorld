@@ -26,7 +26,7 @@ import ch.tbz.wup.views.IUserInterface;
  */
 public class SpawnController implements IObserver {
 	
-	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 20;
+	private static final int MAX_SECONDS_UNTIL_NEXT_SPAWN = 10;
 	private static final int SECONDS_UNTIL_DESPAWN = 60;
 	private static final int MINIMUM_SPAWN_RADIUS = 50; //in meters
 	private static final int MAXIMUM_SPAWN_RADIUS = 150; //in meters
@@ -41,7 +41,7 @@ public class SpawnController implements IObserver {
 	
 	//Counter (countdown) until next spawn occurs. The initial value given specifies,
 	//After which (fixed) time the first Pokémon spawns.
-	private long _nextSpawnCountdownTicks = 20 * MainController.TICKS_PER_SECOND;
+	private long _nextSpawnCountdownTicks = 5 * MainController.TICKS_PER_SECOND;
 	private Random _random = new Random();
 	
 	//The Pokémon that are currently spawned / on the map.
