@@ -3,12 +3,19 @@ package ch.tbz.wup.controllers;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import ch.tbz.wup.IObservable;
+import ch.tbz.wup.IObserver;
 import ch.tbz.wup.models.Player;
+import ch.tbz.wup.models.PokedexEntry;
 import ch.tbz.wup.models.Region;
 import ch.tbz.wup.viewmodels.MainViewModel;
+import ch.tbz.wup.viewmodels.PokedexEntryViewModel;
+import ch.tbz.wup.viewmodels.PokedexViewModel;
 import ch.tbz.wup.views.IUserInterface;
 import ch.tbz.wup.views.Key;
 
@@ -16,9 +23,13 @@ import ch.tbz.wup.views.Key;
  * Controller that handles all actions related to user inputs. Implements KeyListener interface
  * to receive KeyEvents.
  */
-public class UserInputController implements KeyListener {
+public class UserInputController implements KeyListener, IObservable {
 	private Player _player;
 	private IUserInterface _userInterface;
+	
+	private boolean _isPokedexOpen = false;
+	
+	private List<IObserver> _observers = new ArrayList<IObserver>();
 	
 	//Overview over all directional keys and whether they are currently pressed.
 	private Map<Key, Boolean> _pressedKeys = new HashMap<Key, Boolean>();
@@ -118,6 +129,9 @@ public class UserInputController implements KeyListener {
 		case KeyEvent.VK_LEFT:
 			_pressedKeys.put(Key.LEFT, false);
 			break;
+		case KeyEvent.VK_P:
+			togglePokedex();
+			break;
 		}
 	}
 	
@@ -139,6 +153,57 @@ public class UserInputController implements KeyListener {
 		if (_pressedKeys.get(Key.LEFT)) {
 			_userInterface.moveView(-1, 0);
 			_player.setLocation(new Point(_player.getLocation().x - 1, _player.getLocation().y));
+		}
+	}
+	
+	private void togglePokedex() {
+		if (_isPokedexOpen) {
+			_userInterface.hidePokedex();
+			notifyObservers(UserInputControllerStateChange.GAME_UNPAUSED.ordinal());
+			_isPokedexOpen = false;
+			return;
+		}
+		
+		notifyObservers(UserInputControllerStateChange.GAME_PAUSED.ordinal());
+		
+		PokedexViewModel viewModel = new PokedexViewModel();
+		viewModel.entryCount = _player.getPokedex().getPokemon().size();
+		
+		for (PokedexEntry entry : _player.getPokedex().getPokemon().values()) {
+			PokedexEntryViewModel entryViewModel = new PokedexEntryViewModel();
+			entryViewModel.id = entry.getSpecies().getId();
+			entryViewModel.isDiscovered = entry.isDiscovered();
+			entryViewModel.speciesName = entry.getSpecies().getName();
+			entryViewModel.type1 = entry.getSpecies().getType1().getName();
+			
+			if (entry.getSpecies().getType2() != null) {
+				entryViewModel.type2 = entry.getSpecies().getType2().getName();
+			}
+			else {
+				entryViewModel.type2 = "";
+			}
+			
+			viewModel.entries.add(entryViewModel);
+		}
+		
+		_userInterface.showPokedex(viewModel);
+		_isPokedexOpen = true;
+	}
+
+	@Override
+	public void addObserver(IObserver observer) {
+		_observers.add(observer);
+	}
+
+	@Override
+	public void removeObserver(IObserver observer) {
+		_observers.remove(observer);
+	}
+
+	@Override
+	public void notifyObservers(int changeId) {
+		for (IObserver observer : _observers) {
+			observer.onObservableChanged(this, changeId);
 		}
 	}
 }

@@ -2,15 +2,18 @@ package ch.tbz.wup.controllers;
 
 import java.util.List;
 
+import ch.tbz.wup.IObservable;
+import ch.tbz.wup.IObserver;
 import ch.tbz.wup.models.Area;
 import ch.tbz.wup.models.Player;
+import ch.tbz.wup.models.PlayerStateChange;
 import ch.tbz.wup.views.IUserInterface;
 
 /**
  * Controller class which delegates global responsibilities and information.
  * Especially contains a ticker method which is the global game pacer.
  */
-public class MainController {
+public class MainController implements IObserver {
 	/**
 	 * How many ticks are emitted each second.
 	 */
@@ -20,6 +23,8 @@ public class MainController {
 	private SpawnController _spawnController;
 	
 	private long _gameTicks = 0; //The total elapsed game ticks since the game started.
+	private boolean _isPaused = false;
+	private boolean _isGameWon = false;
 	
 	private Player _player;
 	private IUserInterface _userInterface;
@@ -47,7 +52,30 @@ public class MainController {
 	 */
 	public void init() {
 		_userInputController.init();
+		_player.addObserver(this);
+		_userInputController.addObserver(this);
 		startTicker();
+	}
+	
+	@Override
+	public void onObservableChanged(IObservable observable, int changeId) {
+		if (observable instanceof Player 
+				&& changeId == PlayerStateChange.POKEDEX_CHANGED.ordinal() 
+				&& !_isGameWon) {
+			if (_player.isPokedexComplete()) {
+				_isGameWon = true;
+				System.out.println("Congratulations, you win!");
+			}
+		}
+		
+		else if (observable instanceof UserInputController) {
+			if (changeId == UserInputControllerStateChange.GAME_PAUSED.ordinal()) {
+				_isPaused = true;
+			}
+			else if (changeId == UserInputControllerStateChange.GAME_UNPAUSED.ordinal()) {
+				_isPaused = false;
+			}
+		}
 	}
 	
 	//Ticker method that runs throughout the game. Calls the tick method of the
@@ -57,9 +85,11 @@ public class MainController {
 		while (true) {
 			try {
 				Thread.sleep(tickDelay);
-				_gameTicks++;
-				_userInputController.tick(_gameTicks);
-				_spawnController.tick(_gameTicks);
+				if (!_isPaused) {
+					_gameTicks++;
+					_userInputController.tick(_gameTicks);
+					_spawnController.tick(_gameTicks);
+				}
 				
 			} catch (InterruptedException e) {
 				System.out.println("An unknown error occurred: " + e.getMessage() + "\nPlease try to restart the game.");
@@ -67,5 +97,4 @@ public class MainController {
 			}
 		}
 	}
-
 }
