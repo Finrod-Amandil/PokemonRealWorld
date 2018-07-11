@@ -45,7 +45,6 @@ public class Area implements Serializable {
 	}
 	
 	/**
-	 * 
 	 * @return  All areas.
 	 */
 	public static List<Area> getAllAreas() {

@@ -17,6 +17,9 @@ import javax.swing.JLayeredPane;
 
 import ch.tbz.wup.viewmodels.MainViewModel;
 
+/**
+ * Helper class for MainView initialization.
+ */
 public class MapBuilder {
 	private HashMap<Point, JLabel> _mapParts;
 	private JLayeredPane _map;

@@ -11,15 +11,23 @@ import java.util.Map;
 import ch.tbz.wup.models.ElementalType;
 import ch.tbz.wup.models.PokemonSpecies;
 
+/**
+ * Class responsible for all DB queries to the Pokémon data DB.
+ */
 public class PokemonDbContext {
 	private static final String pokemonDbLocation = "\\files\\data\\pokedex.sqlite";
 	
+	/**
+	 * @return All Pokémon species as Map with National Pokédex Numbers as keys.
+	 */
 	public Map<Integer, PokemonSpecies> getPokemonFromDatabase() {
-		// create connection for DB access
         Connection connection = null;
         
         try {
+        	// create connection for DB access
             connection = DriverManager.getConnection(getPokemonDbUrl());
+            
+            //Parse pokemon
             return readPokemon(connection);
             
         } catch (SQLException e) {
@@ -37,15 +45,20 @@ public class PokemonDbContext {
         return null;
     }
 	
+	//DB access information
 	private String getPokemonDbUrl() {
 		String db_directory = pokemonDbLocation;
     	String complete_path = System.getProperty("user.dir") + db_directory;
         return "jdbc:sqlite:" + complete_path;
 	}
 	
+	//Reads out the query results and builds PokemonSpecies instances from the data
 	private Map<Integer, PokemonSpecies> readPokemon(Connection connection) {
 		
+		//LinkedHashMap is used to keep collection ordered.
 		Map<Integer, PokemonSpecies> pokemon_list = new LinkedHashMap<Integer, PokemonSpecies>();
+		
+		//Get big query from helper class.
 		String sql = SqlStatements.GET_POKEMON;
         
         try (Statement statement = connection.createStatement();
@@ -54,6 +67,8 @@ public class PokemonDbContext {
             // loop through the result set
             while (result.next()) {
             	int id = result.getInt("id");
+
+            	//Build Pokémon
             	PokemonSpecies species = PokemonSpecies.builder()
             			.id(id)
             			.name(result.getString("name"))

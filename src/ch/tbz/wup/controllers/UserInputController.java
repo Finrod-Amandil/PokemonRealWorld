@@ -21,13 +21,13 @@ import ch.tbz.wup.views.Key;
 
 /**
  * Controller that handles all actions related to user inputs. Implements KeyListener interface
- * to receive KeyEvents.
+ * to receive KeyEvents. Implements IObservable in order to be able to notify the MainController.
  */
 public class UserInputController implements KeyListener, IObservable {
 	private Player _player;
 	private IUserInterface _userInterface;
 	
-	private boolean _isPokedexOpen = false;
+	private boolean _isPokedexOpen = false; //Whether Pokédex is currently being shown
 	
 	private List<IObserver> _observers = new ArrayList<IObserver>();
 	
@@ -76,7 +76,7 @@ public class UserInputController implements KeyListener, IObservable {
 	/**
 	 * Moves the player every tick, if a key is pressed.
 	 * 
-	 * @param totalTicks
+	 * @param totalTicks  The total amount of game ticks passed since the game started.
 	 */
 	public void tick(long totalTicks) {
 		movePlayer();
@@ -91,6 +91,8 @@ public class UserInputController implements KeyListener, IObservable {
 	/**
 	 * If a directional key is pressed, updates the corresponding entry
 	 * in the key tracking Map to pressed.
+	 * 
+	 * @param e  The KeyEvent object holding information about which key was pressed.
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -107,12 +109,17 @@ public class UserInputController implements KeyListener, IObservable {
 		case KeyEvent.VK_LEFT:
 			_pressedKeys.put(Key.LEFT, true);
 			break;
+		case KeyEvent.VK_P:
+			togglePokedex();
+			break;
 		}
 	}
 	
 	/**
 	 * If a directional key is released, updates the corresponding entry
 	 * in the key tracking Map to released.
+	 * 
+	 * @param e  The KeyEvent object holding information about which key was pressed.
 	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -128,9 +135,6 @@ public class UserInputController implements KeyListener, IObservable {
 			break;
 		case KeyEvent.VK_LEFT:
 			_pressedKeys.put(Key.LEFT, false);
-			break;
-		case KeyEvent.VK_P:
-			togglePokedex();
 			break;
 		}
 	}
@@ -156,16 +160,22 @@ public class UserInputController implements KeyListener, IObservable {
 		}
 	}
 	
+	//Shows / hides the Pokedex. If it is being shown, assemble the PokedexViewModel that is needed
+	//To fill the Pokedex.
 	private void togglePokedex() {
 		if (_isPokedexOpen) {
 			_userInterface.hidePokedex();
+			
+			//Unpause game
 			notifyObservers(UserInputControllerStateChange.GAME_UNPAUSED.ordinal());
 			_isPokedexOpen = false;
 			return;
 		}
 		
+		//Pause game
 		notifyObservers(UserInputControllerStateChange.GAME_PAUSED.ordinal());
 		
+		//Assemble ViewModel
 		PokedexViewModel viewModel = new PokedexViewModel();
 		viewModel.entryCount = _player.getPokedex().getPokemon().size();
 		
@@ -190,16 +200,31 @@ public class UserInputController implements KeyListener, IObservable {
 		_isPokedexOpen = true;
 	}
 
+	/**
+	 * Adds an observer to the list of objects to notify on state change.
+	 * 
+	 * @param observer  The Observer to add.
+	 */
 	@Override
 	public void addObserver(IObserver observer) {
 		_observers.add(observer);
 	}
 
+	/**
+	 * Unsubscribes an observer so that no more notifications are sent to it.
+	 * 
+	 * @param observer  The Observer to remove.
+	 */
 	@Override
 	public void removeObserver(IObserver observer) {
 		_observers.remove(observer);
 	}
 
+	/**
+	 * Notifies all subscribed observers about a state change.
+	 * 
+	 * @param changeId  An index indicating which state has changed.
+	 */
 	@Override
 	public void notifyObservers(int changeId) {
 		for (IObserver observer : _observers) {

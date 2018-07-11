@@ -20,20 +20,33 @@ import ch.tbz.wup.models.Pokedex;
 import ch.tbz.wup.models.PokemonSpecies;
 import ch.tbz.wup.models.Spawn;
 
+/**
+ * Performs all database queries related to the custom game_data.db database.
+ */
 public class GameDataDbContext {
 	private static final String gameDataDbLocation = "\\files\\data\\game_data.db";
 	
+	/**
+	 * Serialises and saves Areas to DB.
+	 * 
+	 * @param areas  Areas including nested objects.
+	 */
 	public void writeAreasToDatabase(List<Area> areas) {
 		List<Area> existingAreas = getAreasFromDatabase();
 		
 		Connection connection = null;
 		try{
+			//Open connection
 			connection = DriverManager.getConnection(getGameDataDbUrl());
 
+			//Save every area seperately.
 	        for (Area area : areas) {
+	        	
+	        	//Streams to convert object to bytes and then output those.
 	        	ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		        ObjectOutputStream oos = new ObjectOutputStream(bos);
 	        	
+		        //Serialise area
 	        	oos.writeObject(area);
 		        oos.flush();
 
@@ -48,6 +61,7 @@ public class GameDataDbContext {
 		        	}
 		        }
 		        
+		        //If area does exist already, overwrite Area-data of existing entry. Else add new entry.
 		        String sql = "";
 		        if (doesAreaAlreadyExist) {
 		        	sql = "UPDATE Area SET area_serialized = ? WHERE id = ?";
@@ -74,6 +88,9 @@ public class GameDataDbContext {
         }
 	}
 	
+	/**
+	 * @return  All areas including nested objects.
+	 */
 	public List<Area> getAreasFromDatabase() {
 		List<Area> areas = new ArrayList<Area>();
 		
@@ -81,8 +98,11 @@ public class GameDataDbContext {
         Connection connection = null;
         ResultSet rs;
 		try {
+			//Build up connection and query
 			connection = DriverManager.getConnection(getGameDataDbUrl());
 			PreparedStatement ps = connection.prepareStatement(sql);
+			
+			//execute query and parse data
 			rs = ps.executeQuery();
 			areas = parseAreas(rs);
 		} 
@@ -102,6 +122,12 @@ public class GameDataDbContext {
         return areas;
 	}
 	
+	/**
+	 * Loads all Spawns from the database. Requires Pokémon data to build species from ID.
+	 * 
+	 * @param pokemon  List of all Pokémon species.
+	 * @return  All Spawn possibilities with an areaId each.
+	 */
 	public List<Spawn> getSpawnsFromDatabase(Map<Integer, PokemonSpecies> pokemon) {
 		List<Spawn> spawns = new ArrayList<Spawn>();
 		
@@ -110,8 +136,11 @@ public class GameDataDbContext {
 		ResultSet rs;
 		
 		try {
+			//Set up connection and query
 			connection = DriverManager.getConnection(getGameDataDbUrl());
 			PreparedStatement ps = connection.prepareStatement(sql);
+			
+			//Execute query and build spawns.
 			rs = ps.executeQuery();
 			spawns = parseSpawns(rs, pokemon);
 		}
@@ -122,6 +151,13 @@ public class GameDataDbContext {
 		return spawns;
 	}
 	
+	/**
+	 * Load the contents of the Pokédex of the specified region.
+	 * 
+	 * @param regionId  The Id of the region to load the Pokédex from.
+	 * @param pokemon  List of all Pokémon species to build nested objects.
+	 * @return  Pokédex with all nested objects and all Pokémon not yet discovered.
+	 */
 	public Pokedex getPokedexFromDatabase(int regionId, Map<Integer, PokemonSpecies> pokemon) {
 		List<Integer> pokemonIds = new ArrayList<Integer>();
 		List<PokemonSpecies> species = new ArrayList<PokemonSpecies>();
@@ -145,6 +181,7 @@ public class GameDataDbContext {
 			sqle.printStackTrace();
 		}
 		
+		//Add species by species-ID.
 		for (Integer pokemonId : pokemonIds) {
 			species.add(pokemon.get(pokemonId));
 		}
@@ -152,12 +189,14 @@ public class GameDataDbContext {
 		return new Pokedex(species);
 	}
 	
+	//Connection information used by all queries.
 	private String getGameDataDbUrl() {
 		String db_directory = gameDataDbLocation;
     	String complete_path = System.getProperty("user.dir") + db_directory;
         return "jdbc:sqlite:" + complete_path;
 	}
 	
+	//Deserialises loaded areas.
 	private List<Area> parseAreas(ResultSet rs) throws SQLException, IOException {
 		List<Area> areas = new ArrayList<Area>();
 		ByteArrayInputStream bais = null;
@@ -199,6 +238,7 @@ public class GameDataDbContext {
 		return areas;
 	}
 	
+	//Builds Spawn objects from DB data.
 	private List<Spawn> parseSpawns(ResultSet rs, Map<Integer, PokemonSpecies> pokemon) throws SQLException {
 		List<Spawn> spawns = new ArrayList<Spawn>();
 		

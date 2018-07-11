@@ -11,6 +11,7 @@ public interface IObserver {
 	 * the Observer-specific reaction to the change.
 	 * 
 	 * @param observable  The object that changed state.
+	 * @param changeId  Numerical identification of which state has changed.
 	 */
 	void onObservableChanged(IObservable observable, int changeId);
 }

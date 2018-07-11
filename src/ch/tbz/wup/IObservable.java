@@ -21,6 +21,9 @@ public interface IObservable {
 	
 	/**
 	 * Calls the onObservableChanged() method of each active observer on this object.
+	 * Requires specification of an id indicating which state has changed.
+	 * 
+	 * @param  changeIndex numerical identification of which state has changed.
 	 */
-	public void notifyObservers(int changeIndex);
+	public void notifyObservers(int changeId);
 }

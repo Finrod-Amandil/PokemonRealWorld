@@ -12,14 +12,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
 import ch.tbz.wup.viewmodels.MainViewModel;
 import ch.tbz.wup.viewmodels.PokedexViewModel;
 
+/**
+ * Main graphic user interface containing most components and implementing other components.
+ */
 public class MainView implements IUserInterface {
-	private static MainView _instance;
+	private static MainView _instance; //Instance variable for Singleton pattern.
 	
+	/**
+	 * @return  The singleton instance of MainView
+	 */
 	public static MainView getInstance() {
 		if (_instance == null) {
 			_instance = new MainView();
@@ -27,20 +32,29 @@ public class MainView implements IUserInterface {
 		return _instance;
 	}
 	
-	private MainView() {}
+	private MainView() {} //private constructor for Singleton pattern
 	
-	private JFrame _frame;
-	private JLayeredPane _contentPane;
-	private JLayeredPane _map;
-	private PokedexView _pokedexView;
+	private JFrame _frame; //Base frame
+	private JLayeredPane _contentPane;  //Topmost content container
+	private JLayeredPane _map; //Container containing all map parts
+	private PokedexView _pokedexView; //Custom container for Pokédexview.
 	
+	//Components which have stationary real coordinates (and thus move when player 'moves')
 	private List<Component> _stationaryComponents = new ArrayList<Component>();
 	
+	/**
+	 * Initializes the view using the provided data.
+	 * 
+	 * @param viewModel  Data required for view initialization.
+	 */
 	@Override
 	public void init(MainViewModel viewModel) {
 		initialize(viewModel);
 	}
 	
+	/**
+	 * Starts up the UI and displays it.
+	 */
 	@Override
 	public void show() {
 		EventQueue.invokeLater(new Runnable() {
@@ -54,17 +68,28 @@ public class MainView implements IUserInterface {
 	    });
 	}
 	
+	/**
+	 * Returns the base component of the window.
+	 */
 	@Override
 	public JFrame getWindow() {
 		return _frame;
 	}
 	
+	/**
+	 * Moves the view for the specified delta.
+	 * 
+	 * @param dX  The location difference along x-axis
+	 * @param dY  The location difference along y-axis
+	 */
 	@Override
 	public void moveView(int dX, int dY) {
+		//Move map
 		_map.setBounds(
 			_map.getX() - dX, _map.getY() + dY,
 			_map.getWidth(), _map.getHeight());
 		
+		//Move all stationary (in real coordinates) components
 		for (Component component : _stationaryComponents) {
 			component.setBounds(
 				component.getX() - dX, component.getY() + dY,
@@ -73,6 +98,15 @@ public class MainView implements IUserInterface {
 		
 	}
 	
+	/**
+	 * Displays the specified image
+	 * 
+	 * @param filePath  Path to the image file.
+	 * @param dimensions  Dimensions of the image file.
+	 * @param rc_point  Where to show image (centered).
+	 * @param rc_center  Relative center point.
+	 * @return  The Component containing the image.
+	 */
 	@Override
 	public JLabel showImage(String filePath, Rectangle dimensions, Point rc_point, Point rc_center) {
 		JLabel image = new JLabel(new ImageIcon(filePath));
@@ -86,6 +120,11 @@ public class MainView implements IUserInterface {
 		return image;
 	}
 
+	/**
+	 * Hides the image given
+	 * 
+	 * @param label  The component to hide.
+	 */
 	@Override
 	public void hideImage(JLabel label) {
 		_stationaryComponents.remove(label);
@@ -94,6 +133,30 @@ public class MainView implements IUserInterface {
 		label.setVisible(false);
 	}
 	
+	
+	/**
+	 * Builds a new PokedexView and displays it.
+	 * 
+	 * @param pokedex  The Pokedex data to display.
+	 */
+	@Override
+	public void showPokedex(PokedexViewModel pokedex) {
+		_pokedexView = new PokedexView(pokedex);
+		_contentPane.add(_pokedexView);
+		_contentPane.moveToFront(_pokedexView);
+	}
+
+	/**
+	 * Hides the pokedex.
+	 */
+	@Override
+	public void hidePokedex() {
+		_contentPane.moveToBack(_pokedexView);
+		_contentPane.remove(_pokedexView);
+		_pokedexView.setVisible(false);
+	}
+	
+	//Builds the main view: Sets its properties, builds map and sets the player sprite.
 	private void initialize(MainViewModel viewModel) {
 		//Set properties of main frame
 	    _frame = new JFrame();
@@ -102,10 +165,12 @@ public class MainView implements IUserInterface {
 	    _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Set close action
 	    _frame.getContentPane().setLayout(null);
 	    
+	    //Create map component
 	    _map = new JLayeredPane();
 	    _map.setName("map");
 	    
 	    try {
+	    	//build map
 			MapBuilder builder = new MapBuilder(viewModel);
 			_map = builder.buildMap();
 			updateMapPosition(viewModel);
@@ -120,6 +185,7 @@ public class MainView implements IUserInterface {
 		}
 	}
 	
+	//Loads and places the player sprite.
 	private void setPlayerSprite() {
 		JLabel playerSprite = new JLabel(new ImageIcon("./files/graphics/sprites/player/front_border.png"));
 		playerSprite.setBounds(_frame.getWidth()/2 - 15, _frame.getHeight()/2 -15, 30, 30);
@@ -139,19 +205,5 @@ public class MainView implements IUserInterface {
 		Point wc_upperLeftCorner = UiUtils.transform(_frame.getBounds(), rc_upperLeftCorner, viewModel.playerLocation);
 		
 		_map.setBounds(wc_upperLeftCorner.x, wc_upperLeftCorner.y, regionBounds.width, regionBounds.height);
-	}
-
-	@Override
-	public void showPokedex(PokedexViewModel pokedex) {
-		_pokedexView = new PokedexView(pokedex);
-		_contentPane.add(_pokedexView);
-		_contentPane.moveToFront(_pokedexView);
-	}
-
-	@Override
-	public void hidePokedex() {
-		_contentPane.moveToBack(_pokedexView);
-		_contentPane.remove(_pokedexView);
-		_pokedexView.setVisible(false);
 	}
 }

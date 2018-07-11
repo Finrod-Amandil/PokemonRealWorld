@@ -67,6 +67,7 @@ public class SpawnController implements IObserver {
 	 * encounter happened.
 	 * 
 	 * @param observable  The object that changed state and raised the notification.
+	 * @param changeId  Index indicating which state has changed.
 	 */
 	@Override
 	public void onObservableChanged(IObservable observable, int changeId) {
@@ -80,7 +81,7 @@ public class SpawnController implements IObserver {
 	 * Pokémon and resets the countdown. Every few ticks check, if a Pokémon should
 	 * despawn due to it being present for too long already.
 	 * 
-	 * @param totalTicks
+	 * @param totalTicks  The total ticks passed since the game started.
 	 */
 	public void tick(long totalTicks) {
 		if (_nextSpawnCountdownTicks <= 0) {

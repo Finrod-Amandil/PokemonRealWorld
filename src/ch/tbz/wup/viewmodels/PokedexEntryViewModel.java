@@ -1,5 +1,8 @@
 package ch.tbz.wup.viewmodels;
 
+/**
+ * ViewModel for one entry in the PokédexView.
+ */
 public class PokedexEntryViewModel {
 	public int id = 0;
 	public String speciesName = "";

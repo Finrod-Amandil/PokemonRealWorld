@@ -3,6 +3,10 @@ package ch.tbz.wup.models;
 import java.awt.Polygon;
 import java.util.List;
 
+/**
+ * A region represents a greater area, consisting of multiple Area instances.
+ * Important: Currently deprecated and not fully implemented.
+ */
 @SuppressWarnings("unused")
 public class Region {
 	private List<Area> _areas;

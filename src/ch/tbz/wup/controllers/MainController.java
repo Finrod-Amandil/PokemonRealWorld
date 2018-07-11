@@ -48,6 +48,7 @@ public class MainController implements IObserver {
 	
 	/**
 	 * Initialises the controller and the underlying specialised controllers.
+	 * Subscribes to any Observables of interest.
 	 * Starts the game ticker and thus the game.
 	 */
 	public void init() {
@@ -57,6 +58,15 @@ public class MainController implements IObserver {
 		startTicker();
 	}
 	
+	/**
+	 * Reacts to an Observable notification, according to which Observable it was
+	 * and which state has changed.
+	 * If the player notofies a change in Pokedex, check if Pokedex is complete and game was won.
+	 * If the UserInputController notifies a change, pause / unpause the game.
+	 * 
+	 * @param observable  The object that raised the notification.
+	 * @param changeId  Index indicating which state changed.
+	 */
 	@Override
 	public void onObservableChanged(IObservable observable, int changeId) {
 		if (observable instanceof Player 

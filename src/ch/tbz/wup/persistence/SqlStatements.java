@@ -1,6 +1,13 @@
 package ch.tbz.wup.persistence;
 
+/**
+ * Helper class to store larger SQL queries.
+ */
 public class SqlStatements {
+	
+	/**
+	 * SQL for loading all Pokémon species with their GERMAN name, id and types.
+	 */
 	public static final String GET_POKEMON = "SELECT pokemon_species.id AS 'id', pokemon_species_names.name AS 'name', type1.type_name AS 'type1', type2.type_name AS 'type2'" +
 			"FROM pokemon_species " + 
 			"JOIN pokemon_species_names ON pokemon_species_names.pokemon_species_id = pokemon_species.id " + 
